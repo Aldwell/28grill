@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>28 GRILL</title>
+  <meta name="description" content="28 GRILL — smash burgers в Капана, Пловдив.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="icon" href="./assets/images/logo.png" type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body data-page="menu">
+  <header class="navbar">
+    <div class="nav-container navbar-inner">
+      <a class="nav-logo" href="index.html" aria-label="28 GRILL home">
+        <img src="./assets/images/logo.png" alt="28 GRILL logo" width="150" height="74">
+      </a>
+      <nav class="nav-menu" data-nav-menu aria-label="Main navigation">
+        <a href="index.html" data-i18n="nav.home"></a>
+        <a href="menu.html" class="active" data-i18n="nav.menu"></a>
+        <a href="order.html" data-i18n="nav.order"></a>
+        <a href="contact.html" data-i18n="nav.contact"></a>
+      </nav>
+      <div class="nav-actions">
+        <div class="language-switcher" data-language-switcher></div>
+        <button class="nav-toggle" type="button" data-nav-toggle data-i18n-aria="nav.toggle" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero menu-hero">
+      <div class="container">
+        <p class="eyebrow" data-i18n="menu.eyebrow"></p>
+        <h1 data-i18n="menu.title"></h1>
+        <p data-i18n="menu.intro"></p>
+      </div>
+    </section>
+
+    <section class="menu-intro-section" aria-label="Menu options">
+      <div class="container">
+        <div class="menu-intro-card">
+          <div>
+            <p class="eyebrow" data-i18n="menu.introCardTitle"></p>
+            <p data-i18n="menu.introCardText"></p>
+          </div>
+          <strong data-i18n="menu.introCardHighlight"></strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="menu-toolbar" aria-label="Menu filters">
+      <div class="container">
+        <div class="category-tabs" role="tablist" aria-label="Menu categories">
+          <button class="category-tab active" type="button" role="tab" aria-selected="true" aria-pressed="true" data-category="all" data-i18n="categories.all"></button>
+          <button class="category-tab" type="button" role="tab" aria-selected="false" aria-pressed="false" data-category="smash" data-i18n="categories.smash"></button>
+          <button class="category-tab" type="button" role="tab" aria-selected="false" aria-pressed="false" data-category="chicken" data-i18n="categories.chicken"></button>
+          <button class="category-tab" type="button" role="tab" aria-selected="false" aria-pressed="false" data-category="simple" data-i18n="categories.simple"></button>
+          <button class="category-tab" type="button" role="tab" aria-selected="false" aria-pressed="false" data-category="veggie" data-i18n="categories.veggie"></button>
+          <button class="category-tab" type="button" role="tab" aria-selected="false" aria-pressed="false" data-category="fries" data-i18n="categories.fries"></button>
+          <button class="category-tab" type="button" role="tab" aria-selected="false" aria-pressed="false" data-category="drinks" data-i18n="categories.drinks"></button>
+          <button class="category-tab" type="button" role="tab" aria-selected="false" aria-pressed="false" data-category="beer" data-i18n="categories.beer"></button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section menu-section">
+      <div class="container">
+        <div class="menu-grid" data-menu-grid></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div>
+        <img src="./assets/images/logo.png" alt="28 GRILL logo" width="120" height="59">
+        <p data-i18n="common.brandLine"></p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <a href="index.html" data-i18n="nav.home"></a>
+        <a href="menu.html" data-i18n="nav.menu"></a>
+        <a href="order.html" data-i18n="nav.order"></a>
+        <a href="contact.html" data-i18n="nav.contact"></a>
+      </nav>
+      <div>
+        <p data-i18n="common.footerContact"></p>
+        <p><a href="tel:+359888395779">088 839 5779</a></p>
+        <p data-i18n="common.footerHours"></p>
+      </div>
+    </div>
+    <div class="footer-bottom">© <span data-year></span> <span data-i18n="common.allRights"></span></div>
+  </footer>
+
+  <script src="./js/translations.js"></script>
+  <script src="./js/menu-data.js"></script>
+  <script src="./js/main.js"></script>
+</body>
+</html>
