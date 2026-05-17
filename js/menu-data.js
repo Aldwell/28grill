@@ -469,4 +469,19 @@ const menuProducts = [
     allergens: [],
     prices: { itemEUR: 4.5 },
   },
+  {
+    id: 'madri-500',
+    category: 'drinks',
+    subcategory: 'beer',
+    available: true,
+    image: './assets/images/madri.png',
+    name: text('Мадри 500мл', 'Madri 500ml'),
+    description: text(
+      'Бира Мадри 500мл.',
+      'Madri beer 500ml.'
+    ),
+    ingredients: text([], []),
+    allergens: [],
+    prices: { itemEUR: 2.5 },
+  },
 ];

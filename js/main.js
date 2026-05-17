@@ -622,6 +622,56 @@ function setupFooterYear() {
   });
 }
 
+function setupTestimonialBook() {
+  const book = document.querySelector('[data-testimonial-book]');
+  if (!book) return;
+
+  const pages = [...book.querySelectorAll('[data-book-page]')];
+  const prev = book.querySelector('[data-book-prev]');
+  const next = book.querySelector('[data-book-next]');
+  const status = book.querySelector('[data-book-status]');
+  let currentPage = 0;
+  let isTurning = false;
+
+  function updateBook() {
+    pages.forEach((page, index) => {
+      page.classList.toggle('is-active', index === currentPage);
+      page.classList.remove('is-turning');
+      page.style.zIndex = index === currentPage ? pages.length + 1 : pages.length - index;
+    });
+
+    if (prev) prev.disabled = currentPage === 0;
+    if (next) next.disabled = currentPage === pages.length - 1;
+    if (status) status.textContent = `${currentPage + 1} / ${pages.length}`;
+  }
+
+  function turnTo(nextPage) {
+    if (isTurning || nextPage === currentPage || nextPage < 0 || nextPage >= pages.length) return;
+
+    isTurning = true;
+    const activePage = pages[currentPage];
+    activePage?.classList.add('is-turning');
+
+    window.setTimeout(() => {
+      currentPage = nextPage;
+      isTurning = false;
+      updateBook();
+    }, 220);
+  }
+
+  prev?.addEventListener('click', () => turnTo(currentPage - 1));
+
+  next?.addEventListener('click', () => turnTo(currentPage + 1));
+
+  pages.forEach((page, index) => {
+    page.addEventListener('click', () => {
+      if (index === currentPage && currentPage < pages.length - 1) turnTo(currentPage + 1);
+    });
+  });
+
+  updateBook();
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   setupPageEntrance();
   setupLanguageSwitcher();
@@ -631,6 +681,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupHeroParallax();
   setupHeroCanvas();
   setupFooterYear();
+  setupTestimonialBook();
   renderLanguageSwitchers();
   applyTranslations();
   setupScrollRevealTargets();
