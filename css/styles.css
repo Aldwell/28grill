@@ -972,6 +972,7 @@ p {
 
 .testimonials-book-copy h2 {
   max-width: 11ch;
+  margin-bottom: 1.25rem;
 }
 
 .testimonials-book-copy p:not(.eyebrow) {
@@ -2351,18 +2352,22 @@ body[data-page="order"] .footer a.order-footer-contact-link:focus-visible {
 
   .nav-menu {
     position: fixed;
-    inset: var(--nav-height) 0 auto;
+    inset: calc(var(--nav-height) + 12px) 20px auto;
     display: grid;
     justify-items: start;
     gap: 1.2rem;
     padding: 1.5rem 24px 2rem;
-    border-bottom: 1px solid rgba(255, 120, 0, 0.08);
-    background: rgba(8, 8, 8, 0.58);
-    box-shadow:
-      0 18px 45px rgba(0, 0, 0, 0.36),
-      0 0 30px rgba(255, 120, 0, 0.06);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 120, 20, 0.08);
+    border-radius: 24px;
+    background:
+      linear-gradient(
+        180deg,
+        rgba(10, 10, 10, 0.82),
+        rgba(0, 0, 0, 0.88)
+      );
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     transform: translateY(calc(-100% - var(--nav-height)));
     transition: transform 180ms ease, background 0.35s ease, backdrop-filter 0.35s ease;
     margin-inline: 0;
