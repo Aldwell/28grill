@@ -604,6 +604,57 @@ p {
   font-size: 0.8rem;
 }
 
+body[data-page="index"] .hero-title span {
+  display: block;
+}
+
+body[data-page="index"] .hero-copy > .eyebrow,
+body[data-page="index"] .hero-title span,
+body[data-page="index"] .hero-title small,
+body[data-page="index"] .hero-intro,
+body[data-page="index"] .hero-actions,
+body[data-page="index"] .hero-proof {
+  --hero-reveal-start: 18px;
+  --hero-reveal-end: 0;
+  opacity: 0;
+  transform: translateY(var(--hero-reveal-start));
+  animation: heroReveal 0.95s ease forwards;
+  will-change: opacity, transform;
+}
+
+body[data-page="index"] .hero-copy > .eyebrow {
+  animation-delay: 0.35s;
+}
+
+body[data-page="index"] .hero-title span {
+  animation-delay: 0.55s;
+}
+
+body[data-page="index"] .hero-title small {
+  animation-delay: 0.75s;
+}
+
+body[data-page="index"] .hero-intro {
+  animation-delay: 0.95s;
+}
+
+body[data-page="index"] .hero-actions {
+  --hero-reveal-start: 0;
+  --hero-reveal-end: -18px;
+  animation-delay: 1.18s;
+}
+
+body[data-page="index"] .hero-proof {
+  animation-delay: 1.4s;
+}
+
+@keyframes heroReveal {
+  to {
+    opacity: 1;
+    transform: translateY(var(--hero-reveal-end));
+  }
+}
+
 .section-heading {
   max-width: 720px;
   margin-bottom: 2rem;
@@ -2303,6 +2354,29 @@ body[data-page="order"] .footer a.order-footer-contact-link:focus-visible {
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
+  }
+
+  body[data-page="index"] .hero-copy > .eyebrow,
+  body[data-page="index"] .hero-title span,
+  body[data-page="index"] .hero-title small,
+  body[data-page="index"] .hero-intro,
+  body[data-page="index"] .hero-actions,
+  body[data-page="index"] .hero-proof {
+    opacity: 1;
+    animation: none;
+    will-change: auto;
+  }
+
+  body[data-page="index"] .hero-copy > .eyebrow,
+  body[data-page="index"] .hero-title span,
+  body[data-page="index"] .hero-title small,
+  body[data-page="index"] .hero-intro,
+  body[data-page="index"] .hero-proof {
+    transform: none;
+  }
+
+  body[data-page="index"] .hero-actions {
+    transform: translateY(-18px);
   }
 
   .btn:hover,
