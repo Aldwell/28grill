@@ -38,8 +38,6 @@ export const Component = ({ testimonials }: ComponentProps) => {
       height={450}
       showCover={true}
       usePortrait={smallerDevice}
-      onFlip={(e) => console.log(e.data)}
-      onChangeState={(e) => console.log(e.data)}
       className={''}
       style={{}}
       startPage={0}

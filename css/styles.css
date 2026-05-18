@@ -1061,7 +1061,7 @@ p {
   background:
     linear-gradient(90deg, rgba(0, 0, 0, 0.16), transparent 18%),
     linear-gradient(rgba(246, 234, 220, 0.7), rgba(246, 234, 220, 0.7)),
-    url('../assets/images/review-page-bg.png');
+    url('../assets/images/review-page-bg.webp');
   background-size: auto, auto, cover;
   background-position: 0 0, 0 0, center;
   background-repeat: no-repeat, no-repeat, no-repeat;
@@ -1372,7 +1372,7 @@ body[data-page="order"] .page-hero {
   min-height: 720px;
   background-image:
     linear-gradient(135deg, rgba(255, 118, 40, 0.18), transparent 38rem),
-    url('../assets/images/order-hero-new.png');
+    url('../assets/images/order-hero-new.webp');
   background-size: auto, cover;
   background-position: 0 0, center center;
   background-repeat: no-repeat, no-repeat;
@@ -1437,7 +1437,7 @@ body[data-page="order"] .page-hero p:not(.eyebrow) {
   border-bottom: 0;
   background-image:
     linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
-    url('../assets/images/menuback.png');
+    url('../assets/images/menuback.webp');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -1496,7 +1496,7 @@ body[data-page="order"] .page-hero p:not(.eyebrow) {
       rgba(255, 120, 0, 0.06) 30%,
       rgba(255, 120, 0, 0) 62%
     ),
-    url('../assets/images/contact-hero-kapana.png');
+    url('../assets/images/contact-hero-kapana.webp');
   background-size: auto, auto, cover;
   background-position: 0 0, 0 0, center center;
   background-repeat: no-repeat, no-repeat, no-repeat;
@@ -1994,6 +1994,31 @@ body[data-page="order"] .page-hero p:not(.eyebrow) {
   letter-spacing: 0.1em;
 }
 
+.order-platform-note {
+  position: relative;
+  max-width: 620px;
+  margin: 18px auto 0;
+  padding-top: 13px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.85rem;
+  font-style: italic;
+  line-height: 1.55;
+  letter-spacing: 0.04em;
+  text-align: center;
+  opacity: 0.62;
+}
+
+.order-platform-note::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 80px;
+  height: 1px;
+  background: rgba(255, 140, 40, 0.18);
+  transform: translateX(-50%);
+}
+
 .visit-section {
   padding-top: 0;
 }
@@ -2336,18 +2361,24 @@ body[data-page="order"] .footer a.order-footer-contact-link:focus-visible {
   }
 
   .navbar {
+    top: 0;
     height: var(--nav-height);
     min-height: var(--nav-height);
     max-height: 70px;
+    margin-top: 0;
+    transform: none;
   }
 
   .nav-container,
   .navbar-inner {
+    top: auto;
     width: min(100% - 24px, 1240px);
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
+    margin-top: 0;
+    transform: none;
   }
 
   .nav-menu {
@@ -2357,18 +2388,18 @@ body[data-page="order"] .footer a.order-footer-contact-link:focus-visible {
     justify-items: start;
     gap: 1.2rem;
     padding: 1.5rem 24px 2rem;
-    border: 1px solid rgba(255, 120, 20, 0.08);
+    border: 1px solid rgba(255, 140, 40, 0.10);
     border-radius: 24px;
     background:
       linear-gradient(
         180deg,
-        rgba(10, 10, 10, 0.82),
-        rgba(0, 0, 0, 0.88)
+        rgba(8, 8, 8, 0.88),
+        rgba(0, 0, 0, 0.92)
       );
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    transform: translateY(calc(-100% - var(--nav-height)));
+    box-shadow: 0 16px 42px rgba(0, 0, 0, 0.52);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    transform: translateY(calc(-100% - var(--nav-height) - 24px));
     transition: transform 180ms ease, background 0.35s ease, backdrop-filter 0.35s ease;
     margin-inline: 0;
   }
@@ -2428,10 +2459,26 @@ body[data-page="order"] .footer a.order-footer-contact-link:focus-visible {
     overflow: visible !important;
   }
 
+  .hero--collage .hero-sparks {
+    position: absolute;
+    top: auto;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 35% !important;
+    z-index: 3;
+    pointer-events: none;
+  }
+
   .hero-bg-image {
+    content: url('../assets/images/home-hero-mobile.webp');
     top: 0 !important;
-    object-fit: cover;
-    object-position: center center;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    object-fit: contain !important;
+    object-position: center -18px !important;
+    background: #070503;
     transform: none !important;
   }
 
@@ -2629,7 +2676,7 @@ body[data-page="order"] .footer a.order-footer-contact-link:focus-visible {
 
   .menu-intro-card strong {
     width: 100%;
-    padding: 0.65rem 0.8rem;
+    padding: 0.65rem 0.65rem;
     border-radius: 12px;
     font-size: 0.72rem;
     text-align: center;
@@ -2742,6 +2789,11 @@ body[data-page="order"] .footer a.order-footer-contact-link:focus-visible {
 
   .order-platform-card {
     min-height: 160px;
+  }
+
+  .order-platform-note {
+    max-width: 280px;
+    line-height: 1.6;
   }
 
   .map-panel iframe {

@@ -199,8 +199,8 @@ function setupLanguageSwitcher() {
   });
 }
 
-function productCard(product, index = 0) {
-  if (product.variants) return loadedFriesCard(product, index);
+function productCard(product, index = 0, eagerImages = 0) {
+  if (product.variants) return loadedFriesCard(product, index, eagerImages);
 
   const name = localized(product.name);
   const description = localized(product.description);
@@ -226,10 +226,11 @@ function productCard(product, index = 0) {
       <span><strong>${t('common.combo')}</strong>${formatPrice(product.prices.menuEUR)}</span>
     `;
   const allergenHtml = (product.allergens || []).map((allergen) => `<li>${t(`allergens.${allergen}`)}</li>`).join('');
+  const imageLoading = index < eagerImages ? 'eager' : 'lazy';
   const mediaHtml = product.image
     ? `
       <div class="menu-card-media">
-        <img src="${product.image}" alt="${imageAlt}" width="900" height="675" loading="lazy" decoding="async">
+        <img src="${product.image}" alt="${imageAlt}" width="900" height="675" loading="${imageLoading}" decoding="async">
       </div>
     `
     : `
@@ -257,13 +258,14 @@ function productCard(product, index = 0) {
   `;
 }
 
-function loadedFriesCard(product, index = 0) {
+function loadedFriesCard(product, index = 0, eagerImages = 0) {
   const name = localized(product.name);
   const activeVariant = product.variants[0];
   const description = localized(activeVariant.description) || localized(product.description);
   const ingredients = localized(activeVariant.ingredients) || localized(product.ingredients) || [];
   const category = t(`categories.${product.category}`);
   const delay = Math.min(index * 0.04, 0.24).toFixed(2);
+  const imageLoading = index < eagerImages ? 'eager' : 'lazy';
   const orderLabel = `${t('common.orderItem')} ${name}`;
   const allergenHtml = (product.allergens || []).map((allergen) => `<li>${t(`allergens.${allergen}`)}</li>`).join('');
   const variantButtons = product.variants.map((variant, variantIndex) => `
@@ -279,7 +281,7 @@ function loadedFriesCard(product, index = 0) {
   return `
     <article class="menu-card loaded-fries-card fade-up" data-category="${product.category}" data-loaded-fries style="--delay:${delay}s">
       <div class="menu-card-media loaded-fries-media">
-        <img class="loaded-fries-image" src="${activeVariant.image}" alt="${name} - ${description}" width="900" height="675" loading="lazy" decoding="async" data-fries-image>
+        <img class="loaded-fries-image" src="${activeVariant.image}" alt="${name} - ${description}" width="900" height="675" loading="${imageLoading}" decoding="async" data-fries-image>
       </div>
       <div class="menu-card-content">
         <div class="menu-card-topline">
@@ -356,7 +358,7 @@ function renderMenu() {
         : menuProducts.filter((product) => product.category === activeCategory);
 
   grid.innerHTML = products.length
-    ? products.map(productCard).join('')
+    ? products.map((product, index) => productCard(product, index, 4)).join('')
     : `<p class="empty-state">${t('menu.empty')}</p>`;
 
   setupLoadedFriesCards();
