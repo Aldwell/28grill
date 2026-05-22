@@ -13,12 +13,16 @@
       <h1>Admin</h1>
       <form class="login-form" data-login-form>
         <label>
+          Username
+          <input type="text" name="username" autocomplete="username" required>
+        </label>
+        <label>
           Password
           <input type="password" name="password" autocomplete="current-password" required>
         </label>
         <button type="submit">Login</button>
       </form>
-      <p class="admin-note">Authentication will be connected in the next phase.</p>
+      <p class="admin-note" data-login-message>Enter the admin password to continue.</p>
     </section>
 
     <section class="admin-panel" data-admin-panel hidden>
@@ -38,8 +42,25 @@
 
       <section class="tab-panel active" data-panel="menu">
         <div class="panel-heading">
-          <h2>Menu editor</h2>
+          <h2>Menu Items</h2>
           <button type="button">New item</button>
+        </div>
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Category</th>
+                <th>Active</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody data-menu-items-list>
+              <tr><td colspan="6">Login to load menu items.</td></tr>
+            </tbody>
+          </table>
         </div>
         <form class="admin-form" data-menu-item-form>
           <label>
@@ -94,18 +115,44 @@
           <h2>Categories</h2>
           <button type="button">New category</button>
         </div>
-        <div class="placeholder-list">
-          <p>Category sorting and active toggles will be implemented in the next phase.</p>
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Slug</th>
+                <th>Sort order</th>
+                <th>Active</th>
+              </tr>
+            </thead>
+            <tbody data-categories-list>
+              <tr><td colspan="5">Login to load categories.</td></tr>
+            </tbody>
+          </table>
         </div>
       </section>
 
       <section class="tab-panel" data-panel="gallery">
         <div class="panel-heading">
-          <h2>Gallery uploader</h2>
+          <h2>Gallery</h2>
           <button type="button">Upload image</button>
         </div>
-        <div class="placeholder-list">
-          <p>R2 uploads and gallery metadata editing will be implemented in the next phase.</p>
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Image</th>
+                <th>Title</th>
+                <th>Alt</th>
+                <th>Active</th>
+              </tr>
+            </thead>
+            <tbody data-gallery-list>
+              <tr><td colspan="5">Login to load gallery images.</td></tr>
+            </tbody>
+          </table>
         </div>
       </section>
     </section>

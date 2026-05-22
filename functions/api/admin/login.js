@@ -1,8 +1,20 @@
 export async function onRequestPost(context) {
-  return jsonResponse({
-    ok: false,
-    message: "Admin authentication will be implemented in the next phase."
-  }, 501);
+  const adminPassword = context.env.ADMIN_PASSWORD;
+
+  if (!adminPassword) {
+    return jsonResponse({ success: false, error: "ADMIN_PASSWORD not configured" }, 500);
+  }
+
+  try {
+    const body = await context.request.json();
+    if (body.username !== "admingrill28" || body.password !== adminPassword) {
+      return jsonResponse({ success: false, error: "Invalid login" }, 401);
+    }
+
+    return jsonResponse({ success: true });
+  } catch (error) {
+    return jsonResponse({ success: false, error: "Invalid login request" }, 400);
+  }
 }
 
 function jsonResponse(payload, status = 200) {
