@@ -68,7 +68,7 @@ async function loadMenuItems() {
     menuItemsList.innerHTML = items.length ? items.map((item) => `
       <tr>
         <td>${item.id}</td>
-        <td>${escapeHtml(item.name_bg || item.name_en || item.slug)}</td>
+        <td>${escapeHtml(item.display_name_bg || item.name_bg || item.name || item.name_en || item.slug)}</td>
         <td>${Number(item.price || 0).toFixed(2)}</td>
         <td>${escapeHtml(item.category_title_bg || item.category_title_en || item.category_slug || '')}</td>
         <td>${item.is_active ? 'Active' : 'Inactive'}</td>
@@ -96,7 +96,7 @@ async function loadCategories() {
     categoriesList.innerHTML = categories.length ? categories.map((category) => `
       <tr>
         <td>${category.id}</td>
-        <td>${escapeHtml(category.title_bg || category.title_en || category.slug)}</td>
+        <td>${escapeHtml(category.display_title_bg || category.title_bg || category.name || category.title_en || category.slug)}</td>
         <td>${escapeHtml(category.slug)}</td>
         <td>${category.sort_order ?? 0}</td>
         <td>${category.is_active ? 'Active' : 'Inactive'}</td>
