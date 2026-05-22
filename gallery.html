@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>28 GRILL</title>
+  <meta name="description" content="28 GRILL — smash burgers в Капана, Пловдив.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="icon" href="./assets/images/logo.png" type="image/png">
+  <link rel="preload" as="image" href="./assets/images/logo-ui.png">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/styles.css?v=sanity-test-1">
+</head>
+<body data-page="gallery">
+  <header class="navbar">
+    <div class="nav-container navbar-inner">
+      <a class="nav-logo" href="index.html" aria-label="28 GRILL home">
+        <img src="./assets/images/logo-ui.png" alt="28 GRILL logo" width="150" height="74">
+      </a>
+      <nav class="nav-menu" data-nav-menu aria-label="Main navigation">
+        <a href="index.html" data-i18n="nav.home"></a>
+        <a href="menu.html" data-i18n="nav.menu"></a>
+        <a href="gallery.html" class="active" data-i18n="nav.gallery"></a>
+        <a href="order.html" data-i18n="nav.order"></a>
+        <a href="contact.html" data-i18n="nav.contact"></a>
+      </nav>
+      <div class="nav-actions">
+        <div class="language-switcher" data-language-switcher></div>
+        <button class="nav-toggle" type="button" data-nav-toggle data-i18n-aria="nav.toggle" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="gallery-hero" aria-labelledby="gallery-title">
+      <div class="container gallery-hero-inner">
+        <p class="eyebrow">28 GRILL</p>
+        <h1 id="gallery-title" data-i18n="gallery.title"></h1>
+        <p data-i18n="gallery.subtitle"></p>
+      </div>
+    </section>
+
+    <section class="section gallery-section" aria-label="28 GRILL gallery">
+      <div class="container">
+        <div class="gallery-grid" data-gallery-grid></div>
+      </div>
+    </section>
+  </main>
+
+  <div class="gallery-lightbox" data-gallery-lightbox hidden role="dialog" aria-modal="true" aria-label="Gallery image viewer">
+    <button class="lightbox-close" type="button" data-lightbox-close aria-label="Close gallery">×</button>
+    <button class="lightbox-arrow lightbox-arrow--prev" type="button" data-lightbox-prev aria-label="Previous image">‹</button>
+    <figure class="lightbox-frame">
+      <img src="" alt="" data-lightbox-image>
+      <figcaption data-lightbox-caption></figcaption>
+    </figure>
+    <button class="lightbox-arrow lightbox-arrow--next" type="button" data-lightbox-next aria-label="Next image">›</button>
+  </div>
+
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div>
+        <a class="footer-logo-link" href="index.html" aria-label="28 GRILL home">
+          <img src="./assets/images/logo-ui.png" alt="28 GRILL logo" width="120" height="59" loading="lazy" decoding="async">
+        </a>
+        <p data-i18n="common.brandLine"></p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <a href="index.html" data-i18n="nav.home"></a>
+        <a href="menu.html" data-i18n="nav.menu"></a>
+        <a href="gallery.html" data-i18n="nav.gallery"></a>
+        <a href="order.html" data-i18n="nav.order"></a>
+        <a href="contact.html" data-i18n="nav.contact"></a>
+      </nav>
+      <div>
+        <p><a class="footer-contact-link" href="https://www.google.com/maps/search/?api=1&query=%D1%83%D0%BB.%20%D0%9F%D0%B0%D0%B2%D0%B5%D0%BB%20%D0%9A%D1%83%D1%80%D1%82%D0%B5%D0%B2%D0%B8%D1%87%2010%2C%20%D0%9A%D0%B0%D0%BF%D0%B0%D0%BD%D0%B0%2C%20%D0%9F%D0%BB%D0%BE%D0%B2%D0%B4%D0%B8%D0%B2" target="_blank" rel="noopener noreferrer" data-i18n="common.footerContact"></a></p>
+        <p><a class="footer-contact-link" href="tel:+359888395779">088 839 5779</a></p>
+        <p data-i18n="common.footerHoursFull"></p>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026 28 GRILL — Пловдив, България</div>
+  </footer>
+
+  <script src="./js/translations.js"></script>
+  <script src="./js/sanity-client.js?v=sanity-debug-1"></script>
+  <script src="./js/gallery-data.js"></script>
+  <script src="./js/main.js"></script>
+  <script src="./js/gallery.js?v=sanity-debug-1"></script>
+</body>
+</html>

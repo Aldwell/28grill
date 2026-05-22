@@ -8,21 +8,22 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="icon" href="./assets/images/logo.png" type="image/png">
-  <link rel="preload" as="image" href="./assets/images/logo-ui.webp">
-  <link rel="preload" as="image" href="./assets/images/background_main.webp" media="(min-width: 721px)">
+  <link rel="preload" as="image" href="./assets/images/logo-ui.png">
+  <link rel="preload" as="image" href="./assets/images/background_main.png" media="(min-width: 721px)">
   <link rel="preload" as="image" href="./assets/images/home-hero-mobile.webp" media="(max-width: 720px)">
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./css/styles.css">
+  <link rel="stylesheet" href="./css/styles.css?v=sanity-test-1">
 </head>
 <body data-page="index">
   <header class="navbar">
     <div class="nav-container navbar-inner">
       <a class="nav-logo" href="index.html" aria-label="28 GRILL home">
-        <img src="./assets/images/logo-ui.webp" alt="28 GRILL logo" width="150" height="74">
+        <img src="./assets/images/logo-ui.png" alt="28 GRILL logo" width="150" height="74">
       </a>
       <nav class="nav-menu" data-nav-menu aria-label="Main navigation">
         <a href="index.html" class="active" data-i18n="nav.home"></a>
         <a href="menu.html" data-i18n="nav.menu"></a>
+        <a href="gallery.html" data-i18n="nav.gallery"></a>
         <a href="order.html" data-i18n="nav.order"></a>
         <a href="contact.html" data-i18n="nav.contact"></a>
       </nav>
@@ -37,7 +38,7 @@
 
   <main>
     <section class="hero hero--collage">
-      <img class="hero-bg-image" src="./assets/images/background_main.webp" alt="" aria-hidden="true">
+      <img class="hero-bg-image" src="./assets/images/background_main.png" alt="" aria-hidden="true">
       <canvas id="heroCanvas" class="hero-sparks" aria-hidden="true"></canvas>
       <div class="container hero-grid">
         <div class="hero-copy">
@@ -307,13 +308,14 @@
     <div class="container footer-grid">
       <div>
         <a class="footer-logo-link" href="index.html" aria-label="28 GRILL home">
-          <img src="./assets/images/logo-ui.webp" alt="28 GRILL logo" width="120" height="59" loading="lazy" decoding="async">
+          <img src="./assets/images/logo-ui.png" alt="28 GRILL logo" width="120" height="59" loading="lazy" decoding="async">
         </a>
         <p data-i18n="common.brandLine"></p>
       </div>
       <nav aria-label="Footer navigation">
         <a href="index.html" data-i18n="nav.home"></a>
         <a href="menu.html" data-i18n="nav.menu"></a>
+        <a href="gallery.html" data-i18n="nav.gallery"></a>
         <a href="order.html" data-i18n="nav.order"></a>
         <a href="contact.html" data-i18n="nav.contact"></a>
       </nav>

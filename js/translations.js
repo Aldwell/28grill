@@ -15,11 +15,12 @@ const translations = {
     meta: {
       indexTitle: '28 GRILL - Премиум смаш бургери в Пловдив',
       menuTitle: 'Меню - 28 GRILL Пловдив',
+      galleryTitle: 'Галерия - 28 GRILL Пловдив',
       orderTitle: 'Поръчка - 28 GRILL Пловдив',
       contactTitle: 'Контакти - 28 GRILL Пловдив',
       description: '28 GRILL в Капана, Пловдив - премиум смаш бургери, онлайн поръчки и QR меню.',
     },
-    nav: { home: 'Начало', menu: 'Меню', order: 'Поръчай', contact: 'Контакти', toggle: 'Отвори менюто', language: 'Език' },
+    nav: { home: 'Начало', menu: 'Меню', gallery: 'Галерия', order: 'Поръчай', contact: 'Контакти', toggle: 'Отвори менюто', language: 'Език' },
     common: {
       brandLine: 'Премиум смаш бургери в Капана, Пловдив.',
       rating: '4.9 рейтинг',
@@ -71,6 +72,10 @@ const translations = {
       introCardHighlight: 'Меню = бургер + картофи + сос + напитка',
       all: 'Всички',
       empty: 'Няма продукти в тази категория.',
+    },
+    gallery: {
+      title: 'Галерия',
+      subtitle: 'Моменти от 28 GRILL',
     },
     order: {
       eyebrow: 'Доставка и взимане',
@@ -127,11 +132,12 @@ const translations = {
     meta: {
       indexTitle: '28 GRILL - Premium smash burgers in Plovdiv',
       menuTitle: 'Menu - 28 GRILL Plovdiv',
+      galleryTitle: 'Gallery - 28 GRILL Plovdiv',
       orderTitle: 'Order - 28 GRILL Plovdiv',
       contactTitle: 'Contact - 28 GRILL Plovdiv',
       description: '28 GRILL in Kapana, Plovdiv - premium smash burgers, online ordering and QR menu.',
     },
-    nav: { home: 'Home', menu: 'Menu', order: 'Order', contact: 'Contact', toggle: 'Open menu', language: 'Language' },
+    nav: { home: 'Home', menu: 'Menu', gallery: 'Gallery', order: 'Order', contact: 'Contact', toggle: 'Open menu', language: 'Language' },
     common: {
       brandLine: 'Premium smash burgers in Kapana, Plovdiv.',
       rating: '4.9 rating',
@@ -184,6 +190,10 @@ const translations = {
       all: 'All',
       empty: 'No items in this category.',
     },
+    gallery: {
+      title: 'Gallery',
+      subtitle: 'Moments from 28 GRILL',
+    },
     order: {
       eyebrow: 'Delivery and pickup',
       title: 'Order 28 GRILL',
@@ -217,11 +227,12 @@ const translations = {
     meta: {
       indexTitle: '28 GRILL - Smash burgers premium à Plovdiv',
       menuTitle: 'Menu - 28 GRILL Plovdiv',
+      galleryTitle: 'Galerie - 28 GRILL Plovdiv',
       orderTitle: 'Commander - 28 GRILL Plovdiv',
       contactTitle: 'Contact - 28 GRILL Plovdiv',
       description: '28 GRILL à Kapana, Plovdiv - smash burgers premium, commande en ligne et menu QR.',
     },
-    nav: { home: 'Accueil', menu: 'Menu', order: 'Commander', contact: 'Contact', toggle: 'Ouvrir le menu', language: 'Langue' },
+    nav: { home: 'Accueil', menu: 'Menu', gallery: 'Galerie', order: 'Commander', contact: 'Contact', toggle: 'Ouvrir le menu', language: 'Langue' },
     common: {
       brandLine: 'Smash burgers premium à Kapana, Plovdiv.',
       rating: 'Note 4.9',
@@ -264,6 +275,7 @@ const translations = {
       proofSauceText: 'Notre signature dans chaque bouchée.',
     },
     menu: { eyebrow: 'Menu QR', title: 'Le menu 28 GRILL', intro: 'Tous les produits sont présentés avec des ingrédients visibles, des prix et des filtres par catégorie.', note: 'Menu = burger + frites + boisson', introCardTitle: 'Choisissez comme vous voulez', introCardText: 'Chaque burger peut être commandé seul ou en menu complet.', introCardHighlight: 'Menu = burger + frites + boisson', all: 'Tous', empty: 'Aucun produit dans cette catégorie.' },
+    gallery: { title: 'Galerie', subtitle: 'Moments de 28 GRILL' },
     order: { eyebrow: 'Livraison et retrait', title: 'Commander 28 GRILL', intro: 'Choisissez votre plateforme préférée ou venez directement à Kapana.', platforms: 'Plateformes', platformDisclaimer: 'Les prix sur les plateformes de livraison peuvent différer des prix sur place.', visitTitle: 'Vous venez sur place ?', visitText: 'Nous sommes au 10 rue Pavel Kurtevich, Kapana. Ouvert tous les jours jusqu’à 23:00.' },
     contact: { eyebrow: 'Contact', title: 'Retrouvez-nous à Kapana', intro: 'Adresse, téléphone, réseaux sociaux et carte pour trouver le chemin le plus rapide vers un bon burger.', info: 'Informations', address: 'Adresse', phone: 'Téléphone', hours: 'Horaires', price: 'Prix', socials: 'Réseaux sociaux', mapTitle: 'Carte vers 28 GRILL', directions: 'Comment venir', walk: '5 minutes à pied de la rue piétonne principale.', car: 'Stationnement autour de la rue Otets Paisiy.', transit: 'Bus 2 et 44, arrêt Kapana.' },
     categories: { all: 'Tous', smash: 'Smash', chicken: 'Poulet', simple: 'Simple', veggie: 'Veggie', fries: 'Frites', drinks: 'Boissons Sans Alcool', beer: 'Bière' },
@@ -274,11 +286,12 @@ const translations = {
     meta: {
       indexTitle: '28 GRILL - Smash burger premium a Plovdiv',
       menuTitle: 'Menu - 28 GRILL Plovdiv',
+      galleryTitle: 'Galleria - 28 GRILL Plovdiv',
       orderTitle: 'Ordina - 28 GRILL Plovdiv',
       contactTitle: 'Contatti - 28 GRILL Plovdiv',
       description: '28 GRILL a Kapana, Plovdiv - smash burger premium, ordini online e menu QR.',
     },
-    nav: { home: 'Home', menu: 'Menu', order: 'Ordina', contact: 'Contatti', toggle: 'Apri menu', language: 'Lingua' },
+    nav: { home: 'Home', menu: 'Menu', gallery: 'Galleria', order: 'Ordina', contact: 'Contatti', toggle: 'Apri menu', language: 'Lingua' },
     common: {
       brandLine: 'Smash burger premium a Kapana, Plovdiv.',
       rating: 'Valutazione 4.9',
@@ -321,6 +334,7 @@ const translations = {
       proofSauceText: 'La nostra firma in ogni morso.',
     },
     menu: { eyebrow: 'Menu QR', title: 'Il menu 28 GRILL', intro: 'Tutti i prodotti sono mostrati con ingredienti visibili, prezzi e filtri per categoria.', note: 'Menu = burger + patatine + bevanda', introCardTitle: 'Scegli come preferisci', introCardText: 'Ogni burger può essere ordinato da solo o come menu completo.', introCardHighlight: 'Menu = burger + patatine + bevanda', all: 'Tutti', empty: 'Nessun prodotto in questa categoria.' },
+    gallery: { title: 'Galleria', subtitle: 'Momenti da 28 GRILL' },
     order: { eyebrow: 'Consegna e ritiro', title: 'Ordina 28 GRILL', intro: 'Scegli la piattaforma preferita o vieni direttamente a Kapana.', platforms: 'Piattaforme', platformDisclaimer: 'I prezzi sulle piattaforme di consegna possono differire dai prezzi sul posto.', visitTitle: 'Vieni di persona?', visitText: 'Siamo in via Pavel Kurtevich 10, Kapana. Aperto ogni giorno fino alle 23:00.' },
     contact: { eyebrow: 'Contatti', title: 'Trovaci a Kapana', intro: 'Indirizzo, telefono, social e mappa per trovare il percorso più veloce verso un buon burger.', info: 'Informazioni', address: 'Indirizzo', phone: 'Telefono', hours: 'Orari', price: 'Prezzo', socials: 'Social', mapTitle: 'Mappa per 28 GRILL', directions: 'Come arrivare', walk: '5 minuti a piedi dalla via pedonale principale.', car: 'Parcheggio intorno a via Otets Paisiy.', transit: 'Bus 2 e 44, fermata Kapana.' },
     categories: { all: 'Tutti', smash: 'Smash', chicken: 'Pollo', simple: 'Simple', veggie: 'Veggie', fries: 'Patatine', drinks: 'Bevande Analcoliche', beer: 'Birra' },
@@ -331,11 +345,12 @@ const translations = {
     meta: {
       indexTitle: '28 GRILL - Smash burgers premium en Plovdiv',
       menuTitle: 'Menú - 28 GRILL Plovdiv',
+      galleryTitle: 'Galería - 28 GRILL Plovdiv',
       orderTitle: 'Pedir - 28 GRILL Plovdiv',
       contactTitle: 'Contacto - 28 GRILL Plovdiv',
       description: '28 GRILL en Kapana, Plovdiv - smash burgers premium, pedidos online y menú QR.',
     },
-    nav: { home: 'Inicio', menu: 'Menú', order: 'Pedir', contact: 'Contacto', toggle: 'Abrir menú', language: 'Idioma' },
+    nav: { home: 'Inicio', menu: 'Menú', gallery: 'Galería', order: 'Pedir', contact: 'Contacto', toggle: 'Abrir menú', language: 'Idioma' },
     common: {
       brandLine: 'Smash burgers premium en Kapana, Plovdiv.',
       rating: 'Valoración 4.9',
@@ -378,6 +393,7 @@ const translations = {
       proofSauceText: 'Nuestra firma en cada bocado.',
     },
     menu: { eyebrow: 'Menú QR', title: 'El menú de 28 GRILL', intro: 'Todos los productos se muestran con ingredientes visibles, precios y filtros por categoría.', note: 'Menú = burger + patatas + bebida', introCardTitle: 'Elige a tu manera', introCardText: 'Cada burger se puede pedir solo o como menú completo.', introCardHighlight: 'Menú = burger + patatas + bebida', all: 'Todos', empty: 'No hay productos en esta categoría.' },
+    gallery: { title: 'Galería', subtitle: 'Momentos de 28 GRILL' },
     order: { eyebrow: 'Entrega y recogida', title: 'Pide 28 GRILL', intro: 'Elige tu plataforma favorita o visítanos directamente en Kapana.', platforms: 'Plataformas', platformDisclaimer: 'Los precios en las plataformas de entrega pueden diferir de los precios en el local.', visitTitle: '¿Vienes en persona?', visitText: 'Estamos en calle Pavel Kurtevich 10, Kapana. Abierto todos los días hasta las 23:00.' },
     contact: { eyebrow: 'Contacto', title: 'Encuéntranos en Kapana', intro: 'Dirección, teléfono, redes sociales y mapa para encontrar el camino más rápido hacia una buena hamburguesa.', info: 'Información', address: 'Dirección', phone: 'Teléfono', hours: 'Horario', price: 'Precio', socials: 'Redes sociales', mapTitle: 'Mapa a 28 GRILL', directions: 'Cómo llegar', walk: '5 minutos a pie desde la calle peatonal principal.', car: 'Aparcamiento cerca de la calle Otets Paisiy.', transit: 'Buses 2 y 44, parada Kapana.' },
     categories: { all: 'Todos', smash: 'Smash', chicken: 'Pollo', simple: 'Simple', veggie: 'Veggie', fries: 'Patatas', drinks: 'Bebidas Sin Alcohol', beer: 'Cerveza' },
@@ -388,11 +404,12 @@ const translations = {
     meta: {
       indexTitle: '28 GRILL - Premium smash burgers στη Φιλιππούπολη',
       menuTitle: 'Μενού - 28 GRILL Plovdiv',
+      galleryTitle: 'Γκαλερί - 28 GRILL Plovdiv',
       orderTitle: 'Παραγγελία - 28 GRILL Plovdiv',
       contactTitle: 'Επικοινωνία - 28 GRILL Plovdiv',
       description: '28 GRILL στο Kapana, Plovdiv - premium smash burgers, online παραγγελία και QR μενού.',
     },
-    nav: { home: 'Αρχική', menu: 'Μενού', order: 'Παραγγελία', contact: 'Επαφή', toggle: 'Άνοιγμα μενού', language: 'Γλώσσα' },
+    nav: { home: 'Αρχική', menu: 'Μενού', gallery: 'Γκαλερί', order: 'Παραγγελία', contact: 'Επαφή', toggle: 'Άνοιγμα μενού', language: 'Γλώσσα' },
     common: {
       brandLine: 'Premium smash burgers στο Kapana, Plovdiv.',
       rating: 'Αξιολόγηση 4.9',
@@ -435,6 +452,7 @@ const translations = {
       proofSauceText: 'Η υπογραφή μας σε κάθε μπουκιά.',
     },
     menu: { eyebrow: 'QR μενού', title: 'Το μενού του 28 GRILL', intro: 'Όλα τα προϊόντα παρουσιάζονται με ορατά υλικά, τιμές και φίλτρα κατηγορίας.', note: 'Μενού = burger + πατάτες + ποτό', introCardTitle: 'Διάλεξε όπως θέλεις', introCardText: 'Κάθε burger μπορεί να παραγγελθεί μόνο του ή ως πλήρες μενού.', introCardHighlight: 'Μενού = burger + πατάτες + ποτό', all: 'Όλα', empty: 'Δεν υπάρχουν προϊόντα σε αυτή την κατηγορία.' },
+    gallery: { title: 'Γκαλερί', subtitle: 'Στιγμές από το 28 GRILL' },
     order: { eyebrow: 'Delivery και παραλαβή', title: 'Παράγγειλε 28 GRILL', intro: 'Διάλεξε την αγαπημένη σου πλατφόρμα ή έλα κατευθείαν στο Kapana.', platforms: 'Πλατφόρμες', platformDisclaimer: 'Οι τιμές στις πλατφόρμες delivery μπορεί να διαφέρουν από τις τιμές στο κατάστημα.', visitTitle: 'Έρχεσαι από κοντά;', visitText: 'Θα μας βρεις στην οδό Pavel Kurtevich 10, Kapana. Ανοιχτά καθημερινά έως 23:00.' },
     contact: { eyebrow: 'Επικοινωνία', title: 'Βρες μας στο Kapana', intro: 'Διεύθυνση, τηλέφωνο, social και χάρτης για τη γρηγορότερη διαδρομή προς ένα καλό burger.', info: 'Πληροφορίες', address: 'Διεύθυνση', phone: 'Τηλέφωνο', hours: 'Ώρες', price: 'Τιμές', socials: 'Social media', mapTitle: 'Χάρτης προς 28 GRILL', directions: 'Πώς θα έρθεις', walk: '5 λεπτά με τα πόδια από τον κεντρικό πεζόδρομο.', car: 'Στάθμευση γύρω από την οδό Otets Paisiy.', transit: 'Λεωφορεία 2 και 44, στάση Kapana.' },
     categories: { all: 'Όλα', smash: 'Smash', chicken: 'Κοτόπουλο', simple: 'Simple', veggie: 'Veggie', fries: 'Πατάτες', drinks: 'Αναψυκτικά', beer: 'Μπίρα' },

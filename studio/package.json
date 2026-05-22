@@ -1,0 +1,23 @@
+{
+  "name": "28grill-studio",
+  "private": true,
+  "version": "1.0.0",
+  "engines": {
+    "node": ">=18 <26"
+  },
+  "scripts": {
+    "dev": "sanity dev",
+    "start": "sanity start",
+    "build": "sanity build",
+    "deploy": "sanity deploy",
+    "import:menu": "node scripts/import-menu.js"
+  },
+  "dependencies": {
+    "@sanity/vision": "^3.85.1",
+    "sanity": "^3.85.1",
+    "styled-components": "^6.1.15"
+  },
+  "devDependencies": {
+    "node": "^20.20.2"
+  }
+}

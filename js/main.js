@@ -42,11 +42,51 @@ function preloadImages(urls) {
   });
 }
 
+function getMenuProducts() {
+  if (Array.isArray(window.sanityMenuProducts)) return window.sanityMenuProducts;
+  if (typeof menuProducts !== 'undefined' && Array.isArray(menuProducts)) return menuProducts;
+  return [];
+}
+
+async function loadSanityMenuProducts() {
+  if (typeof window.fetchSanityMenuData !== 'function') return;
+
+  try {
+    const sanityMenu = await window.fetchSanityMenuData();
+    if (sanityMenu?.products?.length) {
+      window.sanityMenuProducts = sanityMenu.products;
+      window.sanityMenuCategories = sanityMenu.categories || [];
+    }
+  } catch (error) {
+    console.warn('Sanity menu unavailable, using local data.', error);
+  }
+}
+
+function renderCategoryTabs() {
+  const tabs = document.querySelector('.category-tabs');
+  if (!tabs || !Array.isArray(window.sanityMenuCategories) || !window.sanityMenuCategories.length) return;
+
+  const categories = window.sanityMenuCategories
+    .filter((category) => category.isActive !== false && category.slug)
+    .sort((a, b) => (Number(a.order) || 0) - (Number(b.order) || 0));
+
+  tabs.innerHTML = `
+    <button class="category-tab active" type="button" role="tab" aria-selected="true" aria-pressed="true" data-category="all" data-i18n="categories.all">${t('categories.all')}</button>
+    ${categories.map((category) => `
+      <button class="category-tab" type="button" role="tab" aria-selected="false" aria-pressed="false" data-category="${category.slug}">
+        ${t(`categories.${category.slug}`) === `categories.${category.slug}` ? category.title : t(`categories.${category.slug}`)}
+      </button>
+    `).join('')}
+  `;
+}
+
 function setLanguage(languageCode) {
   if (!isValidLanguage(languageCode)) return;
   currentLanguage = languageCode;
   localStorage.setItem(LANGUAGE_STORAGE_KEY, languageCode);
   applyTranslations();
+  renderCategoryTabs();
+  setupCategoryTabs();
   renderMenu();
   renderFeaturedProducts();
   renderLanguageSwitchers();
@@ -309,7 +349,7 @@ function loadedFriesCard(product, index = 0, eagerImages = 0) {
 
 function setupLoadedFriesCards() {
   document.querySelectorAll('[data-loaded-fries]').forEach((card) => {
-    const product = menuProducts.find((item) => item.id === 'loaded-fries');
+    const product = getMenuProducts().find((item) => item.id === 'loaded-fries');
     if (!product) return;
 
     preloadImages(product.variants.map((variant) => variant.image));
@@ -349,13 +389,14 @@ function renderMenu() {
   if (!grid) return;
 
   const activeCategory = document.querySelector('.category-tab.active')?.dataset.category || 'all';
+  const productsSource = getMenuProducts();
   const products = activeCategory === 'all'
-    ? menuProducts
+    ? productsSource
     : activeCategory === 'drinks'
-      ? menuProducts.filter((product) => product.category === 'drinks' && product.subcategory !== 'beer')
+      ? productsSource.filter((product) => product.category === 'drinks' && product.subcategory !== 'beer')
       : activeCategory === 'beer'
-        ? menuProducts.filter((product) => product.category === 'drinks' && product.subcategory === 'beer')
-        : menuProducts.filter((product) => product.category === activeCategory);
+        ? productsSource.filter((product) => product.category === 'drinks' && product.subcategory === 'beer')
+        : productsSource.filter((product) => product.category === activeCategory);
 
   grid.innerHTML = products.length
     ? products.map((product, index) => productCard(product, index, 4)).join('')
@@ -369,7 +410,7 @@ function renderMenu() {
 function renderFeaturedProducts() {
   const grid = document.querySelector('[data-featured-grid]');
   if (!grid) return;
-  grid.innerHTML = menuProducts.filter((product) => product.featured).map(productCard).join('');
+  grid.innerHTML = getMenuProducts().filter((product) => product.featured).map(productCard).join('');
   setupScrollRevealTargets();
   observeFadeUp();
 }
@@ -379,6 +420,8 @@ function setupCategoryTabs() {
   if (!tabs.length) return;
 
   tabs.forEach((tab) => {
+    if (tab.dataset.categoryReady === 'true') return;
+    tab.dataset.categoryReady = 'true';
     tab.addEventListener('click', () => {
       tabs.forEach((item) => {
         item.classList.remove('active');
@@ -674,12 +717,11 @@ function setupTestimonialBook() {
   updateBook();
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   setupPageEntrance();
   setupLanguageSwitcher();
   setupMobileNavigation();
   setupNavbar();
-  setupCategoryTabs();
   setupHeroParallax();
   setupHeroCanvas();
   setupFooterYear();
@@ -687,6 +729,9 @@ document.addEventListener('DOMContentLoaded', () => {
   renderLanguageSwitchers();
   applyTranslations();
   setupScrollRevealTargets();
+  await loadSanityMenuProducts();
+  renderCategoryTabs();
+  setupCategoryTabs();
   renderMenu();
   renderFeaturedProducts();
   observeFadeUp();
