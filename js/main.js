@@ -43,30 +43,33 @@ function preloadImages(urls) {
 }
 
 function getMenuProducts() {
-  if (Array.isArray(window.sanityMenuProducts)) return window.sanityMenuProducts;
+  if (Array.isArray(window.apiMenuProducts)) return window.apiMenuProducts;
   if (typeof menuProducts !== 'undefined' && Array.isArray(menuProducts)) return menuProducts;
   return [];
 }
 
-async function loadSanityMenuProducts() {
-  if (typeof window.fetchSanityMenuData !== 'function') return;
+async function loadRemoteMenuProducts() {
+  if (document.body.dataset.page !== 'menu' || typeof window.fetchMenuApiData !== 'function') return;
+
+  const grid = document.querySelector('[data-menu-grid]');
+  if (grid) grid.innerHTML = '<p class="empty-state">Loading menu...</p>';
 
   try {
-    const sanityMenu = await window.fetchSanityMenuData();
-    if (sanityMenu?.products?.length) {
-      window.sanityMenuProducts = sanityMenu.products;
-      window.sanityMenuCategories = sanityMenu.categories || [];
+    const apiMenu = await window.fetchMenuApiData();
+    if (apiMenu?.products?.length) {
+      window.apiMenuProducts = apiMenu.products;
+      window.apiMenuCategories = apiMenu.categories || [];
     }
   } catch (error) {
-    console.warn('Sanity menu unavailable, using local data.', error);
+    console.warn('Menu API unavailable, using local data.', error);
   }
 }
 
 function renderCategoryTabs() {
   const tabs = document.querySelector('.category-tabs');
-  if (!tabs || !Array.isArray(window.sanityMenuCategories) || !window.sanityMenuCategories.length) return;
+  if (!tabs || !Array.isArray(window.apiMenuCategories) || !window.apiMenuCategories.length) return;
 
-  const categories = window.sanityMenuCategories
+  const categories = window.apiMenuCategories
     .filter((category) => category.isActive !== false && category.slug)
     .sort((a, b) => (Number(a.order) || 0) - (Number(b.order) || 0));
 
@@ -729,7 +732,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderLanguageSwitchers();
   applyTranslations();
   setupScrollRevealTargets();
-  await loadSanityMenuProducts();
+  await loadRemoteMenuProducts();
   renderCategoryTabs();
   setupCategoryTabs();
   renderMenu();
