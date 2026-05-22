@@ -43,44 +43,12 @@ function preloadImages(urls) {
 }
 
 function getMenuProducts() {
-  if (Array.isArray(window.apiMenuProducts)) return window.apiMenuProducts;
   if (typeof menuProducts !== 'undefined' && Array.isArray(menuProducts)) return menuProducts;
   return [];
 }
 
-async function loadRemoteMenuProducts() {
-  if (document.body.dataset.page !== 'menu' || typeof window.fetchMenuApiData !== 'function') return;
-
-  const grid = document.querySelector('[data-menu-grid]');
-  if (grid) grid.innerHTML = '<p class="empty-state">Loading menu...</p>';
-
-  try {
-    const apiMenu = await window.fetchMenuApiData();
-    if (apiMenu?.products?.length) {
-      window.apiMenuProducts = apiMenu.products;
-      window.apiMenuCategories = apiMenu.categories || [];
-    }
-  } catch (error) {
-    console.warn('Menu API unavailable, using local data.', error);
-  }
-}
-
 function renderCategoryTabs() {
-  const tabs = document.querySelector('.category-tabs');
-  if (!tabs || !Array.isArray(window.apiMenuCategories) || !window.apiMenuCategories.length) return;
-
-  const categories = window.apiMenuCategories
-    .filter((category) => category.isActive !== false && category.slug)
-    .sort((a, b) => (Number(a.order) || 0) - (Number(b.order) || 0));
-
-  tabs.innerHTML = `
-    <button class="category-tab active" type="button" role="tab" aria-selected="true" aria-pressed="true" data-category="all" data-i18n="categories.all">${t('categories.all')}</button>
-    ${categories.map((category) => `
-      <button class="category-tab" type="button" role="tab" aria-selected="false" aria-pressed="false" data-category="${category.slug}">
-        ${t(`categories.${category.slug}`) === `categories.${category.slug}` ? category.title : t(`categories.${category.slug}`)}
-      </button>
-    `).join('')}
-  `;
+  return;
 }
 
 function setLanguage(languageCode) {
@@ -732,7 +700,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderLanguageSwitchers();
   applyTranslations();
   setupScrollRevealTargets();
-  await loadRemoteMenuProducts();
   renderCategoryTabs();
   setupCategoryTabs();
   renderMenu();
