@@ -3,23 +3,14 @@ const path = require('path');
 const vm = require('vm');
 
 const root = path.resolve(__dirname, '..');
-const source = fs.readFileSync(path.join(root, 'js/menu-data.js'), 'utf8');
-const context = {};
 
-vm.createContext(context);
-vm.runInContext(`${source}\nthis.menuProducts = menuProducts;`, context);
-
-const products = context.menuProducts || [];
-const categoryOrder = ['smash', 'simple', 'chicken', 'veggie', 'fries', 'drinks', 'beer'];
-const categoryTitles = {
-  smash: ['Smash', 'Smash', 'Smash', 'Smash', 'Smash', 'Smash'],
-  simple: ['Simple', 'Simple', 'Simple', 'Simple', 'Simple', 'Simple'],
-  chicken: ['Пилешко', 'Chicken', 'Poulet', 'Pollo', 'Pollo', 'Κοτόπουλο'],
-  veggie: ['Veggie', 'Veggie', 'Veggie', 'Veggie', 'Veggie', 'Veggie'],
-  fries: ['Fries', 'Fries', 'Frites', 'Patatine', 'Patatas', 'Πατάτες'],
-  drinks: ['Безалкохолни', 'Soft Drinks', 'Boissons Sans Alcool', 'Bevande Analcoliche', 'Bebidas Sin Alcohol', 'Αναψυκτικά'],
-  beer: ['Бира', 'Beer', 'Bière', 'Birra', 'Cerveza', 'Μπίρα'],
-};
+function loadScript(file, exposeCode) {
+  const source = fs.readFileSync(path.join(root, file), 'utf8');
+  const context = {};
+  vm.createContext(context);
+  vm.runInContext(`${source}\n${exposeCode}`, context);
+  return context;
+}
 
 function sql(value) {
   if (value === null || value === undefined) return 'NULL';
@@ -40,12 +31,26 @@ function productPrice(product) {
   return product.prices?.itemEUR || product.prices?.burgerEUR || product.prices?.menuEUR || 0;
 }
 
+const menuContext = loadScript('js/menu-data.js', 'this.menuProducts = menuProducts;');
+const galleryContext = loadScript('js/gallery-data.js', 'this.galleryImages = LOCAL_GALLERY_IMAGES;');
+
+const products = menuContext.menuProducts || [];
+const galleryImages = galleryContext.galleryImages || [];
+const categoryOrder = ['smash', 'simple', 'chicken', 'veggie', 'fries', 'drinks', 'beer'];
+const categoryTitles = {
+  smash: ['Smash', 'Smash', 'Smash', 'Smash', 'Smash', 'Smash'],
+  simple: ['Simple', 'Simple', 'Simple', 'Simple', 'Simple', 'Simple'],
+  chicken: ['Пилешко', 'Chicken', 'Poulet', 'Pollo', 'Pollo', 'Κοτόπουλο'],
+  veggie: ['Veggie', 'Veggie', 'Veggie', 'Veggie', 'Veggie', 'Veggie'],
+  fries: ['Fries', 'Fries', 'Frites', 'Patatine', 'Patatas', 'Πατάτες'],
+  drinks: ['Безалкохолни', 'Soft Drinks', 'Boissons Sans Alcool', 'Bevande Analcoliche', 'Bebidas Sin Alcohol', 'Αναψυκτικά'],
+  beer: ['Бира', 'Beer', 'Bière', 'Birra', 'Cerveza', 'Μπίρα'],
+};
+
 const categorySlugs = [...new Set(products.map(productCategory))]
   .sort((a, b) => categoryOrder.indexOf(a) - categoryOrder.indexOf(b));
 
-const lines = [
-  'BEGIN TRANSACTION;',
-];
+const lines = [];
 
 categorySlugs.forEach((slug, index) => {
   const [bg, en, fr, it, es, el] = categoryTitles[slug] || [slug, slug, slug, slug, slug, slug];
@@ -66,9 +71,14 @@ ON CONFLICT(slug) DO UPDATE SET
 
 products.forEach((product, index) => {
   const categorySlug = productCategory(product);
+  const nameBg = localized(product.name, 'bg');
+  const descriptionBg = localized(product.description, 'bg');
+
   lines.push(`INSERT INTO menu_items (
   category_id,
   slug,
+  name,
+  description,
   name_bg,
   name_en,
   name_fr,
@@ -83,20 +93,24 @@ products.forEach((product, index) => {
   description_el,
   price,
   image_url,
+  image_key,
   image_alt,
   sort_order,
-  is_active
+  is_active,
+  is_available
 )
 VALUES (
   (SELECT id FROM categories WHERE slug = ${sql(categorySlug)}),
   ${sql(product.id)},
-  ${sql(localized(product.name, 'bg'))},
+  ${sql(nameBg)},
+  ${sql(descriptionBg)},
+  ${sql(nameBg)},
   ${sql(localized(product.name, 'en'))},
   ${sql(localized(product.name, 'fr'))},
   ${sql(localized(product.name, 'it'))},
   ${sql(localized(product.name, 'es'))},
   ${sql(localized(product.name, 'el'))},
-  ${sql(localized(product.description, 'bg'))},
+  ${sql(descriptionBg)},
   ${sql(localized(product.description, 'en'))},
   ${sql(localized(product.description, 'fr'))},
   ${sql(localized(product.description, 'it'))},
@@ -104,12 +118,16 @@ VALUES (
   ${sql(localized(product.description, 'el'))},
   ${Number(productPrice(product))},
   ${sql(product.image || '')},
-  ${sql(localized(product.name, 'bg'))},
+  ${sql(product.image ? product.image.replace(/^assets\//, '') : '')},
+  ${sql(nameBg)},
   ${index + 1},
+  ${product.available === false ? 0 : 1},
   ${product.available === false ? 0 : 1}
 )
 ON CONFLICT(slug) DO UPDATE SET
   category_id = excluded.category_id,
+  name = excluded.name,
+  description = excluded.description,
   name_bg = excluded.name_bg,
   name_en = excluded.name_en,
   name_fr = excluded.name_fr,
@@ -124,12 +142,32 @@ ON CONFLICT(slug) DO UPDATE SET
   description_el = excluded.description_el,
   price = excluded.price,
   image_url = excluded.image_url,
+  image_key = excluded.image_key,
   image_alt = excluded.image_alt,
   sort_order = excluded.sort_order,
   is_active = excluded.is_active,
+  is_available = excluded.is_available,
   updated_at = CURRENT_TIMESTAMP;`);
 });
 
-lines.push('COMMIT;');
+galleryImages.forEach((image, index) => {
+  const title = image.alt || `Gallery image ${index + 1}`;
+  const sortOrder = Number(image.order) || index + 1;
+  const slugKey = `gallery-${sortOrder}`;
+
+  lines.push(`INSERT INTO gallery_images (title, alt, image_url, image_key, sort_order, is_active)
+SELECT ${sql(title)}, ${sql(image.alt || title)}, ${sql(image.src)}, ${sql(slugKey)}, ${sortOrder}, ${image.isActive === false ? 0 : 1}
+WHERE NOT EXISTS (SELECT 1 FROM gallery_images WHERE image_url = ${sql(image.src)});
+
+UPDATE gallery_images
+SET
+  title = ${sql(title)},
+  alt = ${sql(image.alt || title)},
+  image_key = ${sql(slugKey)},
+  sort_order = ${sortOrder},
+  is_active = ${image.isActive === false ? 0 : 1},
+  updated_at = CURRENT_TIMESTAMP
+WHERE image_url = ${sql(image.src)};`);
+});
 
 console.log(lines.join('\n\n'));

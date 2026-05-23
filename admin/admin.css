@@ -119,6 +119,17 @@ button {
   color: #ff9f8f;
 }
 
+.admin-message {
+  min-height: 22px;
+  margin: -12px 0 18px;
+  color: var(--orange-2);
+  font-weight: 700;
+}
+
+.admin-message.error {
+  color: #ff9f8f;
+}
+
 .admin-panel {
   padding: 28px;
 }
@@ -228,6 +239,22 @@ button {
 .image-actions button {
   width: auto;
   padding: 0 14px;
+}
+
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.form-actions button {
+  width: auto;
+  padding: 0 18px;
+}
+
+.form-actions button[type="button"] {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.06);
 }
 
 .admin-table-wrap {
