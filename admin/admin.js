@@ -326,6 +326,8 @@ function menuPayload() {
   if (!formData.get('category_id')) throw new Error('Category is required.');
   if (!nameBg && !nameEn) throw new Error('Name BG or Name EN is required.');
   if (formData.get('price') === '') throw new Error('Price is required.');
+  const imageUrl = formData.get('image_url')?.trim();
+  if (!imageUrl) throw new Error('Upload a product image before saving.');
 
   return {
     category_id: asInt(formData.get('category_id')),
@@ -342,7 +344,7 @@ function menuPayload() {
     description_es: formData.get('description_es')?.trim(),
     description_el: formData.get('description_el')?.trim(),
     price: Number(formData.get('price')),
-    image_url: formData.get('image_url')?.trim(),
+    image_url: imageUrl,
     image_key: formData.get('image_key')?.trim(),
     image_alt: formData.get('image_alt')?.trim(),
     sort_order: asInt(formData.get('sort_order')),
@@ -376,7 +378,7 @@ function categoryPayload() {
 function galleryPayload() {
   const formData = new FormData(galleryForm);
   const imageUrl = formData.get('image_url')?.trim();
-  if (!imageUrl) throw new Error('Image URL is required.');
+  if (!imageUrl) throw new Error('Upload a gallery image before saving.');
 
   return {
     title: formData.get('title')?.trim(),
