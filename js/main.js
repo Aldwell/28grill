@@ -53,6 +53,12 @@ function fallbackProductImage() {
     : '';
 }
 
+function getStaticLoadedFriesProduct() {
+  return typeof menuProducts !== 'undefined' && Array.isArray(menuProducts)
+    ? menuProducts.find((product) => product.id === 'loaded-fries')
+    : null;
+}
+
 function preloadImages(urls) {
   urls.forEach((url) => {
     const image = new Image();
@@ -87,6 +93,20 @@ function mapApiMenuItem(item, categoriesById) {
   const image = normalizeMenuImageUrl(item.image_url) || fallbackProductImage();
   const name = apiLocalizedObject(item, 'name');
   const categorySlug = category.slug || item.category_slug || item.category || 'menu';
+
+  if (categorySlug === 'fries') {
+    const loadedFries = getStaticLoadedFriesProduct();
+    if (loadedFries) {
+      return {
+        ...loadedFries,
+        id: 'loaded-fries',
+        slug: item.slug || loadedFries.id,
+        category: 'fries',
+        available: item.is_available !== 0,
+        isActive: item.is_active !== 0,
+      };
+    }
+  }
 
   return {
     id: item.slug || `menu-item-${item.id}`,
