@@ -13,7 +13,7 @@ export async function onRequestGet(context) {
       ORDER BY sort_order ASC, id ASC
     `).all();
 
-    return jsonResponse({ images: images.results || [] });
+    return jsonResponse({ success: true, images: images.results || [] });
   } catch (error) {
     return jsonResponse({ error: "Gallery API unavailable" }, 500);
   }

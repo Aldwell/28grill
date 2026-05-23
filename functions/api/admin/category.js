@@ -16,6 +16,11 @@ export async function onRequestPost(context) {
       return updateCategoryActive(context, payload.id, payload.is_active);
     }
 
+    if (action === "delete") {
+      if (!payload.id) throw new Error("Missing category id");
+      return deleteCategory(context, payload.id);
+    }
+
     if (action !== "create") throw new Error(`Unsupported category action: ${action}`);
 
     validateCategory(payload);
@@ -93,14 +98,43 @@ export async function updateCategoryWithPayload(context, id, payload) {
   }
 }
 
-export async function updateCategoryActive(context, id, isActive) {
+export async function updateCategoryActive(context, id) {
   const db = context.env.DB;
   if (!db) return json({ success: false, error: "Missing DB binding" }, 500);
 
   try {
-    await db.prepare("UPDATE categories SET is_active = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?")
-      .bind(isActive ? 1 : 0, id)
+    await db.prepare(`
+      UPDATE categories
+      SET
+        is_active = CASE WHEN is_active = 1 THEN 0 ELSE 1 END,
+        updated_at = CURRENT_TIMESTAMP
+      WHERE id = ?
+    `)
+      .bind(id)
       .run();
+    return json({ success: true });
+  } catch (error) {
+    return json({ success: false, error: error.message || String(error) }, 400);
+  }
+}
+
+export async function deleteCategory(context, id) {
+  const db = context.env.DB;
+  if (!db) return json({ success: false, error: "Missing DB binding" }, 500);
+
+  try {
+    const linkedItem = await db.prepare("SELECT id FROM menu_items WHERE category_id = ? LIMIT 1")
+      .bind(id)
+      .first();
+
+    if (linkedItem) {
+      return json({ success: false, error: "Category has menu items. Move or delete them first." }, 400);
+    }
+
+    await db.prepare("DELETE FROM categories WHERE id = ?")
+      .bind(id)
+      .run();
+
     return json({ success: true });
   } catch (error) {
     return json({ success: false, error: error.message || String(error) }, 400);

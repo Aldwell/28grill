@@ -16,15 +16,23 @@
   }
 
   async function getGalleryImages() {
-    if (typeof fetchSanityGalleryImages === "function") {
-      try {
-        console.log("Trying Sanity gallery fetch...");
-        const sanityImages = await fetchSanityGalleryImages();
-        console.log("Sanity gallery result:", sanityImages);
-        if (Array.isArray(sanityImages) && sanityImages.length) return sanityImages;
-      } catch (error) {
-        console.warn("Sanity gallery unavailable, using local data.", error);
+    try {
+      const response = await fetch("/api/gallery", { cache: "no-store" });
+      const data = await response.json();
+      if (!response.ok || data.error) {
+        throw new Error(data.error || `Gallery API failed: ${response.status}`);
       }
+
+      console.log("Public gallery API images:", data.images);
+      return (data.images || []).map((image) => ({
+        src: image.image_url,
+        alt: image.alt || image.title || "28 GRILL gallery image",
+        category: image.category || "gallery",
+        order: image.sort_order,
+        isActive: true,
+      }));
+    } catch (error) {
+      console.warn("Gallery API unavailable, using local fallback.", error);
     }
 
     console.log("Using fallback gallery:", getLocalImages());

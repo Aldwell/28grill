@@ -157,13 +157,19 @@ export async function updateMenuItemWithPayload(context, id, payload) {
   }
 }
 
-export async function updateMenuItemActive(context, id, isActive) {
+export async function updateMenuItemActive(context, id) {
   const db = context.env.DB;
   if (!db) return json({ success: false, error: "Missing DB binding" }, 500);
 
   try {
-    await db.prepare("UPDATE menu_items SET is_active = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?")
-      .bind(isActive ? 1 : 0, id)
+    await db.prepare(`
+      UPDATE menu_items
+      SET
+        is_active = CASE WHEN is_active = 1 THEN 0 ELSE 1 END,
+        updated_at = CURRENT_TIMESTAMP
+      WHERE id = ?
+    `)
+      .bind(id)
       .run();
     return json({ success: true });
   } catch (error) {
@@ -176,7 +182,7 @@ export async function softDeleteMenuItem(context, id) {
   if (!db) return json({ success: false, error: "Missing DB binding" }, 500);
 
   try {
-    await db.prepare("UPDATE menu_items SET is_active = 0, updated_at = CURRENT_TIMESTAMP WHERE id = ?")
+    await db.prepare("DELETE FROM menu_items WHERE id = ?")
       .bind(id)
       .run();
     return json({ success: true });

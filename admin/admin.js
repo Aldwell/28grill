@@ -185,6 +185,7 @@ async function loadCategories() {
         <td>
           <div class="admin-actions">
             <button type="button" data-category-edit="${category.id}">Edit</button>
+            <button type="button" data-category-delete="${category.id}">Delete</button>
             <button type="button" data-category-toggle="${category.id}">Toggle active</button>
           </div>
         </td>
@@ -211,6 +212,7 @@ async function loadGallery() {
   try {
     const data = await fetchJson('/api/admin/gallery');
     galleryImages = data.images || [];
+    console.log('Admin gallery images:', galleryImages);
     galleryList.innerHTML = galleryImages.length ? galleryImages.map((image) => `
       <tr>
         <td>${image.id}</td>
@@ -426,17 +428,16 @@ document.addEventListener('click', async (event) => {
     const menuDeleteId = target.dataset.menuDelete;
     if (menuDeleteId) {
       await sendJson('/api/admin/menu-item', 'POST', { action: 'delete', id: menuDeleteId });
-      setAdminMessage('Menu item deactivated.');
+      setAdminMessage('Menu item deleted.');
+      resetMenuForm();
       await loadMenuItems();
     }
 
     const menuToggleId = target.dataset.menuToggle;
     if (menuToggleId) {
-      const item = menuItems.find((entry) => String(entry.id) === menuToggleId);
       await sendJson('/api/admin/menu-item', 'POST', {
         action: 'toggle',
         id: menuToggleId,
-        is_active: item?.is_active ? 0 : 1,
       });
       setAdminMessage('Menu item active state updated.');
       await loadMenuItems();
@@ -451,13 +452,20 @@ document.addEventListener('click', async (event) => {
 
     const categoryToggleId = target.dataset.categoryToggle;
     if (categoryToggleId) {
-      const category = categories.find((entry) => String(entry.id) === categoryToggleId);
       await sendJson('/api/admin/category', 'POST', {
         action: 'toggle',
         id: categoryToggleId,
-        is_active: category?.is_active ? 0 : 1,
       });
       setAdminMessage('Category active state updated.');
+      await loadCategories();
+      await loadMenuItems();
+    }
+
+    const categoryDeleteId = target.dataset.categoryDelete;
+    if (categoryDeleteId) {
+      await sendJson('/api/admin/category', 'POST', { action: 'delete', id: categoryDeleteId });
+      setAdminMessage('Category deleted.');
+      resetCategoryForm();
       await loadCategories();
       await loadMenuItems();
     }
@@ -472,17 +480,16 @@ document.addEventListener('click', async (event) => {
     const galleryDeleteId = target.dataset.galleryDelete;
     if (galleryDeleteId) {
       await sendJson('/api/admin/gallery', 'POST', { action: 'delete', id: galleryDeleteId });
-      setAdminMessage('Gallery item deactivated.');
+      setAdminMessage('Gallery item deleted.');
+      resetGalleryForm();
       await loadGallery();
     }
 
     const galleryToggleId = target.dataset.galleryToggle;
     if (galleryToggleId) {
-      const image = galleryImages.find((entry) => String(entry.id) === galleryToggleId);
       await sendJson('/api/admin/gallery', 'POST', {
         action: 'toggle',
         id: galleryToggleId,
-        is_active: image?.is_active ? 0 : 1,
       });
       setAdminMessage('Gallery active state updated.');
       await loadGallery();

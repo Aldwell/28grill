@@ -7,11 +7,11 @@ export async function onRequestGet(context) {
 
   try {
     const categories = await db
-      .prepare("SELECT * FROM categories ORDER BY sort_order ASC")
+      .prepare("SELECT * FROM categories WHERE is_active = 1 ORDER BY sort_order ASC")
       .all();
 
     const items = await db
-      .prepare("SELECT * FROM menu_items WHERE is_active = 1 ORDER BY sort_order ASC")
+      .prepare("SELECT * FROM menu_items WHERE is_active = 1 AND is_available = 1 ORDER BY sort_order ASC")
       .all();
 
     return Response.json({
