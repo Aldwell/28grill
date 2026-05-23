@@ -20,6 +20,11 @@ const menuItemForm = document.querySelector('[data-menu-item-form]');
 const categoryForm = document.querySelector('[data-category-form]');
 const galleryForm = document.querySelector('[data-gallery-form]');
 const categorySelect = menuItemForm?.querySelector('[name="category_id"]');
+const friesSpecialNote = document.querySelector('[data-fries-special-note]');
+
+const LOADED_FRIES_SLUG = 'loaded-fries';
+const LOADED_FRIES_IMAGE = './assets/images/menu/fries/cheddar-fries.webp';
+const LOADED_FRIES_IMAGE_KEY = 'images/menu/fries/cheddar-fries.webp';
 
 let menuItems = [];
 let categories = [];
@@ -85,6 +90,39 @@ function normalizeImageUrl(imageUrl) {
   if (value.startsWith('./')) return `/${value.slice(2)}`;
   if (value.startsWith('assets/')) return `/${value}`;
   return value;
+}
+
+function isLoadedFriesItem(item) {
+  return item && (
+    item.slug === LOADED_FRIES_SLUG
+    || item.id === LOADED_FRIES_SLUG
+    || item.category_slug === 'fries'
+    || item.category === 'fries'
+  );
+}
+
+function menuItemImageUrl(item) {
+  if (isLoadedFriesItem(item)) return item.image_url || LOADED_FRIES_IMAGE;
+  return item.image_url || '';
+}
+
+function menuItemImageAlt(item) {
+  return item.image_alt || item.display_name_bg || item.name_bg || item.name || '';
+}
+
+function menuItemDisplayName(item) {
+  if (isLoadedFriesItem(item)) return 'Loaded Fries';
+  return item.display_name_bg || item.name_bg || item.name || item.name_en || item.slug;
+}
+
+function menuItemDisplayCategory(item) {
+  if (isLoadedFriesItem(item)) return 'Fries';
+  return item.category_title_bg || item.category_title_en || item.category_slug || '';
+}
+
+function menuItemDisplayPrice(item) {
+  if (isLoadedFriesItem(item)) return `from €${Number(item.price || 5).toFixed(0)}`;
+  return Number(item.price || 0).toFixed(2);
 }
 
 function imageMarkup(imageUrl, alt = '', className = 'admin-thumb') {
@@ -173,10 +211,10 @@ async function loadMenuItems() {
     menuItemsList.innerHTML = menuItems.length ? menuItems.map((item) => `
       <tr>
         <td>${item.id}</td>
-        <td>${imageMarkup(item.image_url, item.image_alt || item.display_name_bg || item.name_bg || '')}</td>
-        <td>${escapeHtml(item.display_name_bg || item.name_bg || item.name || item.name_en || item.slug)}</td>
-        <td>${Number(item.price || 0).toFixed(2)}</td>
-        <td>${escapeHtml(item.category_title_bg || item.category_title_en || item.category_slug || '')}</td>
+        <td>${imageMarkup(menuItemImageUrl(item), menuItemImageAlt(item))}</td>
+        <td>${escapeHtml(menuItemDisplayName(item))}</td>
+        <td>${escapeHtml(menuItemDisplayPrice(item))}</td>
+        <td>${escapeHtml(menuItemDisplayCategory(item))}</td>
         <td>${item.is_active ? 'Active' : 'Inactive'}</td>
         <td>
           <div class="admin-actions">
@@ -265,6 +303,7 @@ function resetMenuForm() {
   menuItemForm.elements.id.value = '';
   menuItemForm.elements.is_active.checked = true;
   menuItemForm.elements.is_available.checked = true;
+  if (friesSpecialNote) friesSpecialNote.hidden = true;
   setPreview(imagePreview, '');
 }
 
@@ -281,7 +320,12 @@ function fillMenuForm(item) {
   });
   menuItemForm.elements.is_active.checked = Boolean(item.is_active);
   menuItemForm.elements.is_available.checked = item.is_available !== 0;
-  setPreview(imagePreview, item.image_url, item.image_alt || item.name_bg || item.name || '');
+  if (isLoadedFriesItem(item) && !menuItemForm.elements.image_url.value) {
+    menuItemForm.elements.image_url.value = LOADED_FRIES_IMAGE;
+    if (menuItemForm.elements.image_key) menuItemForm.elements.image_key.value = LOADED_FRIES_IMAGE_KEY;
+  }
+  if (friesSpecialNote) friesSpecialNote.hidden = !isLoadedFriesItem(item);
+  setPreview(imagePreview, menuItemImageUrl(item), item.image_alt || item.name_bg || item.name || 'Loaded Fries');
 }
 
 function resetCategoryForm() {
@@ -327,7 +371,10 @@ function menuPayload() {
   if (!nameBg && !nameEn) throw new Error('Name BG or Name EN is required.');
   if (formData.get('price') === '') throw new Error('Price is required.');
   const imageUrl = formData.get('image_url')?.trim();
-  if (!imageUrl) throw new Error('Upload a product image before saving.');
+  const id = formData.get('id')?.trim();
+  const currentItem = menuItems.find((item) => String(item.id) === id);
+  const finalImageUrl = imageUrl || (isLoadedFriesItem(currentItem) ? LOADED_FRIES_IMAGE : '');
+  if (!finalImageUrl) throw new Error('Upload a product image before saving.');
 
   return {
     category_id: asInt(formData.get('category_id')),
@@ -344,8 +391,8 @@ function menuPayload() {
     description_es: formData.get('description_es')?.trim(),
     description_el: formData.get('description_el')?.trim(),
     price: Number(formData.get('price')),
-    image_url: imageUrl,
-    image_key: formData.get('image_key')?.trim(),
+    image_url: finalImageUrl,
+    image_key: formData.get('image_key')?.trim() || (isLoadedFriesItem(currentItem) ? LOADED_FRIES_IMAGE_KEY : ''),
     image_alt: formData.get('image_alt')?.trim(),
     sort_order: asInt(formData.get('sort_order')),
     is_active: asBool(formData.get('is_active')),

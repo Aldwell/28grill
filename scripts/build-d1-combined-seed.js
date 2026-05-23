@@ -31,6 +31,15 @@ function productPrice(product) {
   return product.prices?.itemEUR || product.prices?.burgerEUR || product.prices?.menuEUR || 0;
 }
 
+function productImage(product) {
+  if (product.id === 'loaded-fries') return product.variants?.[0]?.image || '';
+  return product.image || '';
+}
+
+function imageKey(imagePath) {
+  return String(imagePath || '').replace(/^\.?\//, '').replace(/^assets\//, '');
+}
+
 const menuContext = loadScript('js/menu-data.js', 'this.menuProducts = menuProducts;');
 const galleryContext = loadScript('js/gallery-data.js', 'this.galleryImages = LOCAL_GALLERY_IMAGES;');
 
@@ -73,6 +82,7 @@ products.forEach((product, index) => {
   const categorySlug = productCategory(product);
   const nameBg = localized(product.name, 'bg');
   const descriptionBg = localized(product.description, 'bg');
+  const imageUrl = productImage(product);
 
   lines.push(`INSERT INTO menu_items (
   category_id,
@@ -117,8 +127,8 @@ VALUES (
   ${sql(localized(product.description, 'es'))},
   ${sql(localized(product.description, 'el'))},
   ${Number(productPrice(product))},
-  ${sql(product.image || '')},
-  ${sql(product.image ? product.image.replace(/^assets\//, '') : '')},
+  ${sql(imageUrl)},
+  ${sql(imageKey(imageUrl))},
   ${sql(nameBg)},
   ${index + 1},
   ${product.available === false ? 0 : 1},

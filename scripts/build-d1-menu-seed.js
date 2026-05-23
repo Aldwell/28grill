@@ -40,6 +40,11 @@ function productPrice(product) {
   return product.prices?.itemEUR || product.prices?.burgerEUR || product.prices?.menuEUR || 0;
 }
 
+function productImage(product) {
+  if (product.id === 'loaded-fries') return product.variants?.[0]?.image || '';
+  return product.image || '';
+}
+
 const categorySlugs = [...new Set(products.map(productCategory))]
   .sort((a, b) => categoryOrder.indexOf(a) - categoryOrder.indexOf(b));
 
@@ -66,6 +71,7 @@ ON CONFLICT(slug) DO UPDATE SET
 
 products.forEach((product, index) => {
   const categorySlug = productCategory(product);
+  const imageUrl = productImage(product);
   lines.push(`INSERT INTO menu_items (
   category_id,
   slug,
@@ -103,7 +109,7 @@ VALUES (
   ${sql(localized(product.description, 'es'))},
   ${sql(localized(product.description, 'el'))},
   ${Number(productPrice(product))},
-  ${sql(product.image || '')},
+  ${sql(imageUrl)},
   ${sql(localized(product.name, 'bg'))},
   ${index + 1},
   ${product.available === false ? 0 : 1}

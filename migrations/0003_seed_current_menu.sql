@@ -1,3 +1,4 @@
+BEGIN TRANSACTION;
 
 INSERT INTO categories (name, slug, title_bg, title_en, title_fr, title_it, title_es, title_el, sort_order, is_active)
 VALUES ('Smash', 'smash', 'Smash', 'Smash', 'Smash', 'Smash', 'Smash', 'Smash', 1, 1)
@@ -1016,7 +1017,7 @@ VALUES (
   'Patatas crujientes con tu extra y salsa cheddar caliente.',
   'Τραγανές πατάτες με την επιλογή σου και ζεστή σάλτσα cheddar.',
   5,
-  '',
+  './assets/images/menu/fries/cheddar-fries.webp',
   'Loaded Fries',
   15,
   1
