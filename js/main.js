@@ -1,4 +1,7 @@
 let currentLanguage = getInitialLanguage();
+let activeMenuProducts = null;
+let activeMenuCategories = null;
+let usingApiMenu = false;
 
 function getLanguageCodes() {
   return Object.keys(LANGUAGES);
@@ -35,6 +38,21 @@ function formatPrice(value) {
   return Number.isInteger(price) ? `€${price}` : `€${price.toFixed(2)}`;
 }
 
+function normalizeMenuImageUrl(imageUrl) {
+  const value = String(imageUrl || '').trim();
+  if (!value) return '';
+  if (/^https?:\/\//i.test(value) || value.startsWith('/')) return value;
+  if (value.startsWith('./')) return `/${value.slice(2)}`;
+  if (value.startsWith('assets/')) return `/${value}`;
+  return value;
+}
+
+function fallbackProductImage() {
+  return typeof menuProducts !== 'undefined' && Array.isArray(menuProducts)
+    ? menuProducts.find((product) => product.image)?.image || ''
+    : '';
+}
+
 function preloadImages(urls) {
   urls.forEach((url) => {
     const image = new Image();
@@ -42,13 +60,130 @@ function preloadImages(urls) {
   });
 }
 
+function apiLocalizedObject(item, field) {
+  return {
+    bg: item[`${field}_bg`] || item[field] || item[`${field}_en`] || '',
+    en: item[`${field}_en`] || item[field] || item[`${field}_bg`] || '',
+    fr: item[`${field}_fr`] || item[`${field}_en`] || item[field] || item[`${field}_bg`] || '',
+    it: item[`${field}_it`] || item[`${field}_en`] || item[field] || item[`${field}_bg`] || '',
+    es: item[`${field}_es`] || item[`${field}_en`] || item[field] || item[`${field}_bg`] || '',
+    el: item[`${field}_el`] || item[`${field}_en`] || item[field] || item[`${field}_bg`] || '',
+  };
+}
+
+function apiCategoryLabel(category) {
+  return {
+    bg: category.title_bg || category.name || category.title_en || category.slug || '',
+    en: category.title_en || category.name || category.title_bg || category.slug || '',
+    fr: category.title_fr || category.title_en || category.name || category.title_bg || category.slug || '',
+    it: category.title_it || category.title_en || category.name || category.title_bg || category.slug || '',
+    es: category.title_es || category.title_en || category.name || category.title_bg || category.slug || '',
+    el: category.title_el || category.title_en || category.name || category.title_bg || category.slug || '',
+  };
+}
+
+function mapApiMenuItem(item, categoriesById) {
+  const category = categoriesById.get(Number(item.category_id)) || {};
+  const image = normalizeMenuImageUrl(item.image_url) || fallbackProductImage();
+  const name = apiLocalizedObject(item, 'name');
+  const categorySlug = category.slug || item.category_slug || item.category || 'menu';
+
+  return {
+    id: item.slug || `menu-item-${item.id}`,
+    slug: item.slug || `menu-item-${item.id}`,
+    category: categorySlug,
+    categoryLabel: apiCategoryLabel(category),
+    name,
+    description: apiLocalizedObject(item, 'description'),
+    image,
+    imageAlt: item.image_alt || localized(name),
+    prices: {
+      itemEUR: Number(item.price) || 0,
+    },
+    priceLabel: {
+      bg: 'Бургер',
+      en: 'Burger',
+      fr: 'Burger',
+      it: 'Burger',
+      es: 'Burger',
+      el: 'Burger',
+    },
+    badges: [],
+    isActive: item.is_active !== 0,
+    available: item.is_available !== 0,
+  };
+}
+
+async function loadApiMenu() {
+  if (document.body.dataset.page !== 'menu') return;
+
+  try {
+    const response = await fetch('/api/menu', { cache: 'no-store' });
+    const data = await response.json();
+    if (!response.ok || data.success === false) {
+      throw new Error(data.error || `Menu API failed: ${response.status}`);
+    }
+
+    const categories = Array.isArray(data.categories) ? data.categories : [];
+    const items = Array.isArray(data.items) ? data.items : [];
+    console.log('Using API menu items:', items.length);
+
+    const categoriesById = new Map(categories.map((category) => [Number(category.id), category]));
+    activeMenuCategories = categories.map((category) => ({
+      ...category,
+      label: apiCategoryLabel(category),
+    }));
+    activeMenuProducts = items.map((item) => mapApiMenuItem(item, categoriesById));
+    usingApiMenu = true;
+  } catch (error) {
+    console.warn('Menu API unavailable, using static fallback.', error);
+    console.log('Using static fallback menu');
+    activeMenuProducts = null;
+    activeMenuCategories = null;
+    usingApiMenu = false;
+  }
+}
+
 function getMenuProducts() {
+  if (Array.isArray(activeMenuProducts)) return activeMenuProducts;
   if (typeof menuProducts !== 'undefined' && Array.isArray(menuProducts)) return menuProducts;
   return [];
 }
 
 function renderCategoryTabs() {
-  return;
+  const container = document.querySelector('.category-tabs');
+  if (!container || !usingApiMenu || !Array.isArray(activeMenuCategories)) return;
+
+  const previousCategory = container.querySelector('.category-tab.active')?.dataset.category || 'all';
+  const availableSlugs = new Set(activeMenuCategories.map((category) => category.slug));
+  const activeCategory = previousCategory === 'all' || availableSlugs.has(previousCategory)
+    ? previousCategory
+    : 'all';
+
+  const tabHtml = [
+    {
+      slug: 'all',
+      label: t('categories.all'),
+    },
+    ...activeMenuCategories.map((category) => ({
+      slug: category.slug,
+      label: localized(category.label) || category.slug,
+    })),
+  ].map((category) => {
+    const isActive = category.slug === activeCategory;
+    return `
+      <button class="category-tab${isActive ? ' active' : ''}"
+        type="button"
+        role="tab"
+        aria-selected="${isActive}"
+        aria-pressed="${isActive}"
+        data-category="${category.slug}">
+        ${category.label}
+      </button>
+    `;
+  }).join('');
+
+  container.innerHTML = tabHtml;
 }
 
 function setLanguage(languageCode) {
@@ -216,18 +351,22 @@ function productCard(product, index = 0, eagerImages = 0) {
   const name = localized(product.name);
   const description = localized(product.description);
   const ingredients = localized(product.ingredients) || [];
-  const category = product.category === 'drinks' && product.subcategory === 'beer'
+  const category = product.categoryLabel
+    ? localized(product.categoryLabel)
+    : product.category === 'drinks' && product.subcategory === 'beer'
     ? t('categories.beer')
     : t(`categories.${product.category}`);
   const delay = Math.min(index * 0.04, 0.24).toFixed(2);
-  const imageAlt = `${name} - ${description}`;
+  const imageAlt = product.imageAlt || `${name} - ${description}`;
   const orderLabel = `${t('common.orderItem')} ${name}`;
   const badges = [
     product.badge ? t(`badges.${product.badge}`) : '',
     product.spicy ? t('badges.spicy') : '',
   ].filter(Boolean);
   const hasIngredients = Array.isArray(ingredients) ? ingredients.length > 0 : Boolean(ingredients);
-  const singlePriceLabel = product.category === 'drinks'
+  const singlePriceLabel = product.priceLabel
+    ? localized(product.priceLabel)
+    : product.category === 'drinks'
     ? t(product.subcategory === 'beer' ? 'common.beer' : 'common.drink')
     : t('common.item');
   const priceHtml = product.prices.itemEUR
@@ -365,8 +504,8 @@ function renderMenu() {
     ? productsSource
     : activeCategory === 'drinks'
       ? productsSource.filter((product) => product.category === 'drinks' && product.subcategory !== 'beer')
-      : activeCategory === 'beer'
-        ? productsSource.filter((product) => product.category === 'drinks' && product.subcategory === 'beer')
+    : activeCategory === 'beer'
+        ? productsSource.filter((product) => product.category === 'beer' || (product.category === 'drinks' && product.subcategory === 'beer'))
         : productsSource.filter((product) => product.category === activeCategory);
 
   grid.innerHTML = products.length
@@ -689,6 +828,7 @@ function setupTestimonialBook() {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
+  await loadApiMenu();
   setupPageEntrance();
   setupLanguageSwitcher();
   setupMobileNavigation();
