@@ -23,6 +23,7 @@ const categorySelect = menuItemForm?.querySelector('[name="category_id"]');
 const friesSpecialNote = document.querySelector('[data-fries-special-note]');
 const friesPriceNote = document.querySelector('[data-fries-price-note]');
 const menuPreview = document.querySelector('[data-menu-preview]');
+const adminToast = document.querySelector('[data-admin-toast]');
 
 const LOADED_FRIES_SLUG = 'loaded-fries';
 const LOADED_FRIES_IMAGE = './assets/images/menu/fries/cheddar-fries.webp';
@@ -36,6 +37,7 @@ let menuItems = [];
 let categories = [];
 let galleryImages = [];
 let activeTab = 'menu';
+let toastTimer = null;
 
 function escapeHtml(value) {
   return String(value ?? '').replace(/[&<>"']/g, (char) => ({
@@ -57,6 +59,34 @@ function setAdminMessage(message, isError = false) {
   if (!adminMessage) return;
   adminMessage.textContent = message || '';
   adminMessage.classList.toggle('error', isError);
+}
+
+function showToast(message, isError = false) {
+  if (!adminToast) return;
+  window.clearTimeout(toastTimer);
+  adminToast.textContent = message;
+  adminToast.hidden = false;
+  adminToast.classList.toggle('error', isError);
+  requestAnimationFrame(() => adminToast.classList.add('visible'));
+  toastTimer = window.setTimeout(() => {
+    adminToast.classList.remove('visible');
+    window.setTimeout(() => {
+      adminToast.hidden = true;
+    }, 220);
+  }, 3000);
+}
+
+function setButtonLoading(button, isLoading, loadingText) {
+  if (!button) return;
+  if (isLoading) {
+    button.dataset.originalText = button.dataset.originalText || button.textContent;
+    button.disabled = true;
+    button.innerHTML = `<span class="button-spinner" aria-hidden="true"></span>${escapeHtml(loadingText)}`;
+    return;
+  }
+  button.disabled = false;
+  button.textContent = button.dataset.originalText || button.textContent;
+  delete button.dataset.originalText;
 }
 
 function showAdmin() {
@@ -623,20 +653,34 @@ document.addEventListener('click', async (event) => {
     }
 
     if (target.matches('[data-upload-menu-image]')) {
-      const data = await uploadImage(imageInput, 'menu');
-      menuItemForm.elements.image_url.value = data.image_url || '';
-      menuItemForm.elements.image_key.value = data.image_key || '';
-      setPreview(imagePreview, data.image_url, menuItemForm.elements.image_alt?.value || '');
-      updateMenuPreview();
-      setAdminMessage('Снимката е качена успешно.');
+      if (target.disabled) return;
+      setButtonLoading(target, true, 'Uploading...');
+      try {
+        const data = await uploadImage(imageInput, 'menu');
+        menuItemForm.elements.image_url.value = data.image_url || '';
+        menuItemForm.elements.image_key.value = data.image_key || '';
+        setPreview(imagePreview, data.image_url, menuItemForm.elements.image_alt?.value || '');
+        updateMenuPreview();
+        setAdminMessage('Снимката е качена успешно.');
+        showToast('Снимката е качена успешно.');
+      } finally {
+        setButtonLoading(target, false);
+      }
     }
 
     if (target.matches('[data-upload-gallery-image]')) {
-      const data = await uploadImage(galleryImageInput, 'gallery');
-      galleryForm.elements.image_url.value = data.image_url || '';
-      galleryForm.elements.image_key.value = data.image_key || '';
-      setPreview(galleryImagePreview, data.image_url, galleryForm.elements.alt?.value || galleryForm.elements.title?.value || '');
-      setAdminMessage('Снимката е качена успешно.');
+      if (target.disabled) return;
+      setButtonLoading(target, true, 'Uploading...');
+      try {
+        const data = await uploadImage(galleryImageInput, 'gallery');
+        galleryForm.elements.image_url.value = data.image_url || '';
+        galleryForm.elements.image_key.value = data.image_key || '';
+        setPreview(galleryImagePreview, data.image_url, galleryForm.elements.alt?.value || galleryForm.elements.title?.value || '');
+        setAdminMessage('Снимката е качена успешно.');
+        showToast('Снимката е качена успешно.');
+      } finally {
+        setButtonLoading(target, false);
+      }
     }
 
     if (target.matches('[data-remove-gallery-image]')) {
@@ -730,12 +774,16 @@ document.addEventListener('click', async (event) => {
     }
   } catch (error) {
     setAdminMessage(error.message, true);
+    showToast(error.message, true);
   }
 });
 
 menuItemForm?.addEventListener('submit', async (event) => {
   event.preventDefault();
   setAdminMessage('');
+  const submitButton = event.submitter || menuItemForm.querySelector('button[type="submit"]');
+  if (submitButton?.disabled) return;
+  setButtonLoading(submitButton, true, 'Saving...');
 
   try {
     const id = menuItemForm.elements.id.value;
@@ -745,17 +793,24 @@ menuItemForm?.addEventListener('submit', async (event) => {
       id,
       ...payload,
     });
-    setAdminMessage('Saved successfully');
+    setAdminMessage('Запазено успешно.');
+    showToast('Запазено успешно.');
     if (!id) resetMenuForm();
     await loadMenuItems();
   } catch (error) {
     setAdminMessage(error.message, true);
+    showToast(error.message, true);
+  } finally {
+    setButtonLoading(submitButton, false);
   }
 });
 
 categoryForm?.addEventListener('submit', async (event) => {
   event.preventDefault();
   setAdminMessage('');
+  const submitButton = event.submitter || categoryForm.querySelector('button[type="submit"]');
+  if (submitButton?.disabled) return;
+  setButtonLoading(submitButton, true, 'Saving...');
 
   try {
     const id = categoryForm.elements.id.value;
@@ -765,18 +820,25 @@ categoryForm?.addEventListener('submit', async (event) => {
       id,
       ...payload,
     });
-    setAdminMessage('Saved successfully');
+    setAdminMessage('Запазено успешно.');
+    showToast('Запазено успешно.');
     if (!id) resetCategoryForm();
     await loadCategories();
     await loadMenuItems();
   } catch (error) {
     setAdminMessage(error.message, true);
+    showToast(error.message, true);
+  } finally {
+    setButtonLoading(submitButton, false);
   }
 });
 
 galleryForm?.addEventListener('submit', async (event) => {
   event.preventDefault();
   setAdminMessage('');
+  const submitButton = event.submitter || galleryForm.querySelector('button[type="submit"]');
+  if (submitButton?.disabled) return;
+  setButtonLoading(submitButton, true, 'Saving...');
 
   try {
     const id = galleryForm.elements.id.value;
@@ -786,11 +848,15 @@ galleryForm?.addEventListener('submit', async (event) => {
       id,
       ...payload,
     });
-    setAdminMessage('Saved successfully');
+    setAdminMessage('Запазено успешно.');
+    showToast('Запазено успешно.');
     if (!id) resetGalleryForm();
     await loadGallery();
   } catch (error) {
     setAdminMessage(error.message, true);
+    showToast(error.message, true);
+  } finally {
+    setButtonLoading(submitButton, false);
   }
 });
 
@@ -802,6 +868,7 @@ imageInput?.addEventListener('change', () => {
   } catch (error) {
     imageInput.value = '';
     setAdminMessage(error.message, true);
+    showToast(error.message, true);
     return;
   }
 
@@ -820,6 +887,7 @@ galleryImageInput?.addEventListener('change', () => {
   } catch (error) {
     galleryImageInput.value = '';
     setAdminMessage(error.message, true);
+    showToast(error.message, true);
     return;
   }
 
