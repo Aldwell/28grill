@@ -21,10 +21,15 @@ const categoryForm = document.querySelector('[data-category-form]');
 const galleryForm = document.querySelector('[data-gallery-form]');
 const categorySelect = menuItemForm?.querySelector('[name="category_id"]');
 const friesSpecialNote = document.querySelector('[data-fries-special-note]');
+const friesPriceNote = document.querySelector('[data-fries-price-note]');
+const menuPreview = document.querySelector('[data-menu-preview]');
 
 const LOADED_FRIES_SLUG = 'loaded-fries';
 const LOADED_FRIES_IMAGE = './assets/images/menu/fries/cheddar-fries.webp';
 const LOADED_FRIES_IMAGE_KEY = 'images/menu/fries/cheddar-fries.webp';
+const MAX_UPLOAD_BYTES = 5 * 1024 * 1024;
+const ALLOWED_UPLOAD_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
+const DELETE_CONFIRM_MESSAGE = 'Това ще изтрие елемента завинаги. Сигурни ли сте?';
 
 let menuItems = [];
 let categories = [];
@@ -125,6 +130,20 @@ function menuItemDisplayPrice(item) {
   return Number(item.price || 0).toFixed(2);
 }
 
+function confirmHardDelete() {
+  return window.confirm(DELETE_CONFIRM_MESSAGE);
+}
+
+function validateUploadFile(file) {
+  if (!file) throw new Error('Моля, изберете снимка.');
+  if (!ALLOWED_UPLOAD_TYPES.has(file.type)) {
+    throw new Error('Моля, качете JPG, PNG или WEBP снимка.');
+  }
+  if (file.size > MAX_UPLOAD_BYTES) {
+    throw new Error('Снимката е твърде голяма. Максимумът е 5MB.');
+  }
+}
+
 function imageMarkup(imageUrl, alt = '', className = 'admin-thumb') {
   const normalized = normalizeImageUrl(imageUrl);
   if (!normalized) return '<span class="muted">No image</span>';
@@ -137,6 +156,37 @@ function setPreview(previewElement, imageUrl, alt = '') {
   previewElement.innerHTML = normalized
     ? `<img src="${escapeHtml(normalized)}" alt="${escapeHtml(alt)}" onerror="this.replaceWith(Object.assign(document.createElement('span'), { textContent: 'Image not found' }))">`
     : '<span>No image selected</span>';
+}
+
+function updateMenuPreview() {
+  if (!menuPreview || !menuItemForm) return;
+  const name = menuItemForm.elements.name_bg?.value?.trim() || 'Product preview';
+  const description = menuItemForm.elements.description_bg?.value?.trim() || 'Fill the form to preview the item.';
+  const price = Number(menuItemForm.elements.price?.value || 0);
+  const imageUrl = menuItemForm.elements.image_url?.value || '';
+  const categoryOption = categorySelect?.selectedOptions?.[0];
+  const category = categoryOption?.textContent?.trim() || 'Menu item';
+
+  const media = menuPreview.querySelector('.admin-preview-media');
+  if (media) {
+    media.innerHTML = imageUrl
+      ? imageMarkup(imageUrl, name, '')
+      : '<span>No image</span>';
+  }
+
+  menuPreview.querySelector('.admin-preview-category').textContent = category;
+  menuPreview.querySelector('h3').textContent = name;
+  menuPreview.querySelector('.admin-preview-description').textContent = description;
+  menuPreview.querySelector('.admin-preview-price').textContent = price ? `€${price.toFixed(2)}` : '€0';
+}
+
+function updateGalleryPreviewFromForm() {
+  if (!galleryForm) return;
+  setPreview(
+    galleryImagePreview,
+    galleryForm.elements.image_url?.value || '',
+    galleryForm.elements.alt?.value || galleryForm.elements.title?.value || ''
+  );
 }
 
 function scrollToForm(formElement, focusSelector) {
@@ -171,7 +221,7 @@ async function sendJson(url, method, payload) {
 
 async function uploadImage(fileInput, type) {
   const file = fileInput?.files?.[0];
-  if (!file) throw new Error('Choose an image first.');
+  validateUploadFile(file);
 
   const formData = new FormData();
   formData.append('file', file);
@@ -219,8 +269,8 @@ async function loadMenuItems() {
         <td>
           <div class="admin-actions">
             <button type="button" data-menu-edit="${item.id}">Edit</button>
-            <button type="button" data-menu-delete="${item.id}">Delete</button>
-            <button type="button" data-menu-toggle="${item.id}">Toggle active</button>
+            ${isLoadedFriesItem(item) ? '<span class="admin-badge">Special item</span>' : `<button class="danger" type="button" data-menu-delete="${item.id}">Delete</button>`}
+            <button type="button" data-menu-toggle="${item.id}">${item.is_active ? 'Hide from site' : 'Show on site'}</button>
           </div>
         </td>
       </tr>
@@ -248,8 +298,8 @@ async function loadCategories() {
         <td>
           <div class="admin-actions">
             <button type="button" data-category-edit="${category.id}">Edit</button>
-            <button type="button" data-category-delete="${category.id}">Delete</button>
-            <button type="button" data-category-toggle="${category.id}">Toggle active</button>
+            <button class="danger" type="button" data-category-delete="${category.id}">Delete</button>
+            <button type="button" data-category-toggle="${category.id}">${category.is_active ? 'Hide from site' : 'Show on site'}</button>
           </div>
         </td>
       </tr>
@@ -286,8 +336,8 @@ async function loadGallery() {
         <td>
           <div class="admin-actions">
             <button type="button" data-gallery-edit="${image.id}">Edit</button>
-            <button type="button" data-gallery-delete="${image.id}">Delete</button>
-            <button type="button" data-gallery-toggle="${image.id}">Toggle active</button>
+            <button class="danger" type="button" data-gallery-delete="${image.id}">Delete</button>
+            <button type="button" data-gallery-toggle="${image.id}">${image.is_active ? 'Hide from site' : 'Show on site'}</button>
           </div>
         </td>
       </tr>
@@ -304,7 +354,10 @@ function resetMenuForm() {
   menuItemForm.elements.is_active.checked = true;
   menuItemForm.elements.is_available.checked = true;
   if (friesSpecialNote) friesSpecialNote.hidden = true;
+  if (friesPriceNote) friesPriceNote.hidden = true;
+  if (menuItemForm.elements.price) menuItemForm.elements.price.disabled = false;
   setPreview(imagePreview, '');
+  updateMenuPreview();
 }
 
 function fillMenuForm(item) {
@@ -325,7 +378,10 @@ function fillMenuForm(item) {
     if (menuItemForm.elements.image_key) menuItemForm.elements.image_key.value = LOADED_FRIES_IMAGE_KEY;
   }
   if (friesSpecialNote) friesSpecialNote.hidden = !isLoadedFriesItem(item);
+  if (friesPriceNote) friesPriceNote.hidden = !isLoadedFriesItem(item);
+  if (menuItemForm.elements.price) menuItemForm.elements.price.disabled = isLoadedFriesItem(item);
   setPreview(imagePreview, menuItemImageUrl(item), item.image_alt || item.name_bg || item.name || 'Loaded Fries');
+  updateMenuPreview();
 }
 
 function resetCategoryForm() {
@@ -350,6 +406,7 @@ function resetGalleryForm() {
   galleryForm.elements.id.value = '';
   galleryForm.elements.is_active.checked = true;
   setPreview(galleryImagePreview, '');
+  updateGalleryPreviewFromForm();
 }
 
 function fillGalleryForm(image) {
@@ -360,20 +417,22 @@ function fillGalleryForm(image) {
   });
   galleryForm.elements.is_active.checked = Boolean(image.is_active);
   setPreview(galleryImagePreview, image.image_url, image.alt || image.title || '');
+  updateGalleryPreviewFromForm();
 }
 
 function menuPayload() {
   const formData = new FormData(menuItemForm);
   const nameBg = formData.get('name_bg')?.trim();
   const nameEn = formData.get('name_en')?.trim();
-
-  if (!formData.get('category_id')) throw new Error('Category is required.');
-  if (!nameBg && !nameEn) throw new Error('Name BG or Name EN is required.');
-  if (formData.get('price') === '') throw new Error('Price is required.');
-  const imageUrl = formData.get('image_url')?.trim();
   const id = formData.get('id')?.trim();
   const currentItem = menuItems.find((item) => String(item.id) === id);
-  const finalImageUrl = imageUrl || (isLoadedFriesItem(currentItem) ? LOADED_FRIES_IMAGE : '');
+  const isFries = isLoadedFriesItem(currentItem);
+
+  if (!formData.get('category_id')) throw new Error('Category is required.');
+  if (!nameBg) throw new Error('BG name is required.');
+  if (!isFries && formData.get('price') === '') throw new Error('Price is required.');
+  const imageUrl = formData.get('image_url')?.trim();
+  const finalImageUrl = imageUrl || (isFries ? LOADED_FRIES_IMAGE : '');
   if (!finalImageUrl) throw new Error('Upload a product image before saving.');
 
   return {
@@ -390,9 +449,9 @@ function menuPayload() {
     description_it: formData.get('description_it')?.trim(),
     description_es: formData.get('description_es')?.trim(),
     description_el: formData.get('description_el')?.trim(),
-    price: Number(formData.get('price')),
+    price: isFries ? Number(currentItem?.price || 5) : Number(formData.get('price')),
     image_url: finalImageUrl,
-    image_key: formData.get('image_key')?.trim() || (isLoadedFriesItem(currentItem) ? LOADED_FRIES_IMAGE_KEY : ''),
+    image_key: formData.get('image_key')?.trim() || (isFries ? LOADED_FRIES_IMAGE_KEY : ''),
     image_alt: formData.get('image_alt')?.trim(),
     sort_order: asInt(formData.get('sort_order')),
     is_active: asBool(formData.get('is_active')),
@@ -424,12 +483,14 @@ function categoryPayload() {
 
 function galleryPayload() {
   const formData = new FormData(galleryForm);
+  const title = formData.get('title')?.trim();
+  if (!title) throw new Error('Title is required.');
   const imageUrl = formData.get('image_url')?.trim();
   if (!imageUrl) throw new Error('Upload a gallery image before saving.');
 
   return {
-    title: formData.get('title')?.trim(),
-    alt: formData.get('alt')?.trim(),
+    title,
+    alt: formData.get('alt')?.trim() || title,
     image_url: imageUrl,
     image_key: formData.get('image_key')?.trim(),
     sort_order: asInt(formData.get('sort_order')),
@@ -502,7 +563,8 @@ document.addEventListener('click', async (event) => {
       menuItemForm.elements.image_url.value = data.image_url || '';
       menuItemForm.elements.image_key.value = data.image_key || '';
       setPreview(imagePreview, data.image_url, menuItemForm.elements.image_alt?.value || '');
-      setAdminMessage('Menu image uploaded.');
+      updateMenuPreview();
+      setAdminMessage('Снимката е качена успешно.');
     }
 
     if (target.matches('[data-upload-gallery-image]')) {
@@ -510,7 +572,7 @@ document.addEventListener('click', async (event) => {
       galleryForm.elements.image_url.value = data.image_url || '';
       galleryForm.elements.image_key.value = data.image_key || '';
       setPreview(galleryImagePreview, data.image_url, galleryForm.elements.alt?.value || galleryForm.elements.title?.value || '');
-      setAdminMessage('Gallery image uploaded.');
+      setAdminMessage('Снимката е качена успешно.');
     }
 
     if (target.matches('[data-remove-gallery-image]')) {
@@ -529,19 +591,21 @@ document.addEventListener('click', async (event) => {
 
     const menuDeleteId = target.dataset.menuDelete;
     if (menuDeleteId) {
+      if (!confirmHardDelete()) return;
       await sendJson('/api/admin/menu-item', 'POST', { action: 'delete', id: menuDeleteId });
-      setAdminMessage('Menu item deleted.');
+      setAdminMessage('Deleted');
       resetMenuForm();
       await loadMenuItems();
     }
 
     const menuToggleId = target.dataset.menuToggle;
     if (menuToggleId) {
+      const item = menuItems.find((entry) => String(entry.id) === menuToggleId);
       await sendJson('/api/admin/menu-item', 'POST', {
         action: 'toggle',
         id: menuToggleId,
       });
-      setAdminMessage('Menu item active state updated.');
+      setAdminMessage(item?.is_active ? 'Hidden from site' : 'Shown on site');
       await loadMenuItems();
     }
 
@@ -554,19 +618,21 @@ document.addEventListener('click', async (event) => {
 
     const categoryToggleId = target.dataset.categoryToggle;
     if (categoryToggleId) {
+      const category = categories.find((entry) => String(entry.id) === categoryToggleId);
       await sendJson('/api/admin/category', 'POST', {
         action: 'toggle',
         id: categoryToggleId,
       });
-      setAdminMessage('Category active state updated.');
+      setAdminMessage(category?.is_active ? 'Hidden from site' : 'Shown on site');
       await loadCategories();
       await loadMenuItems();
     }
 
     const categoryDeleteId = target.dataset.categoryDelete;
     if (categoryDeleteId) {
+      if (!confirmHardDelete()) return;
       await sendJson('/api/admin/category', 'POST', { action: 'delete', id: categoryDeleteId });
-      setAdminMessage('Category deleted.');
+      setAdminMessage('Deleted');
       resetCategoryForm();
       await loadCategories();
       await loadMenuItems();
@@ -581,19 +647,21 @@ document.addEventListener('click', async (event) => {
 
     const galleryDeleteId = target.dataset.galleryDelete;
     if (galleryDeleteId) {
+      if (!confirmHardDelete()) return;
       await sendJson('/api/admin/gallery', 'POST', { action: 'delete', id: galleryDeleteId });
-      setAdminMessage('Gallery item deleted.');
+      setAdminMessage('Deleted');
       resetGalleryForm();
       await loadGallery();
     }
 
     const galleryToggleId = target.dataset.galleryToggle;
     if (galleryToggleId) {
+      const image = galleryImages.find((entry) => String(entry.id) === galleryToggleId);
       await sendJson('/api/admin/gallery', 'POST', {
         action: 'toggle',
         id: galleryToggleId,
       });
-      setAdminMessage('Gallery active state updated.');
+      setAdminMessage(image?.is_active ? 'Hidden from site' : 'Shown on site');
       await loadGallery();
     }
   } catch (error) {
@@ -613,7 +681,7 @@ menuItemForm?.addEventListener('submit', async (event) => {
       id,
       ...payload,
     });
-    setAdminMessage(id ? 'Menu item updated.' : 'Menu item created.');
+    setAdminMessage('Saved successfully');
     if (!id) resetMenuForm();
     await loadMenuItems();
   } catch (error) {
@@ -633,7 +701,7 @@ categoryForm?.addEventListener('submit', async (event) => {
       id,
       ...payload,
     });
-    setAdminMessage(id ? 'Category updated.' : 'Category created.');
+    setAdminMessage('Saved successfully');
     if (!id) resetCategoryForm();
     await loadCategories();
     await loadMenuItems();
@@ -654,7 +722,7 @@ galleryForm?.addEventListener('submit', async (event) => {
       id,
       ...payload,
     });
-    setAdminMessage(id ? 'Gallery item updated.' : 'Gallery item created.');
+    setAdminMessage('Saved successfully');
     if (!id) resetGalleryForm();
     await loadGallery();
   } catch (error) {
@@ -665,14 +733,31 @@ galleryForm?.addEventListener('submit', async (event) => {
 imageInput?.addEventListener('change', () => {
   const file = imageInput.files?.[0];
   if (!file || !imagePreview) return;
+  try {
+    validateUploadFile(file);
+  } catch (error) {
+    imageInput.value = '';
+    setAdminMessage(error.message, true);
+    return;
+  }
 
   const imageUrl = URL.createObjectURL(file);
   imagePreview.innerHTML = `<img src="${imageUrl}" alt="Selected product preview">`;
+  updateMenuPreview();
+  const media = menuPreview?.querySelector('.admin-preview-media');
+  if (media) media.innerHTML = `<img src="${imageUrl}" alt="Selected product preview">`;
 });
 
 galleryImageInput?.addEventListener('change', () => {
   const file = galleryImageInput.files?.[0];
   if (!file || !galleryImagePreview) return;
+  try {
+    validateUploadFile(file);
+  } catch (error) {
+    galleryImageInput.value = '';
+    setAdminMessage(error.message, true);
+    return;
+  }
 
   const imageUrl = URL.createObjectURL(file);
   galleryImagePreview.innerHTML = `<img src="${imageUrl}" alt="Selected gallery preview">`;
@@ -687,10 +772,20 @@ removeImageButton?.addEventListener('click', () => {
 
 menuItemForm?.elements.image_url?.addEventListener('input', () => {
   setPreview(imagePreview, menuItemForm.elements.image_url.value, menuItemForm.elements.image_alt?.value || '');
+  updateMenuPreview();
 });
 
 galleryForm?.elements.image_url?.addEventListener('input', () => {
   setPreview(galleryImagePreview, galleryForm.elements.image_url.value, galleryForm.elements.alt?.value || galleryForm.elements.title?.value || '');
+});
+
+['name_bg', 'description_bg', 'price', 'category_id'].forEach((field) => {
+  menuItemForm?.elements[field]?.addEventListener('input', updateMenuPreview);
+  menuItemForm?.elements[field]?.addEventListener('change', updateMenuPreview);
+});
+
+['title', 'alt'].forEach((field) => {
+  galleryForm?.elements[field]?.addEventListener('input', updateGalleryPreviewFromForm);
 });
 
 if (localStorage.getItem(SESSION_KEY) === 'true') {

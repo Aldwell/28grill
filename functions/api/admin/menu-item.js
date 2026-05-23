@@ -182,6 +182,14 @@ export async function softDeleteMenuItem(context, id) {
   if (!db) return json({ success: false, error: "Missing DB binding" }, 500);
 
   try {
+    const item = await db.prepare("SELECT slug FROM menu_items WHERE id = ? LIMIT 1")
+      .bind(id)
+      .first();
+
+    if (item?.slug === "loaded-fries") {
+      return json({ success: false, error: "Loaded Fries is a special item and cannot be deleted." }, 400);
+    }
+
     await db.prepare("DELETE FROM menu_items WHERE id = ?")
       .bind(id)
       .run();
@@ -193,7 +201,8 @@ export async function softDeleteMenuItem(context, id) {
 
 function validateMenuItem(payload) {
   if (!payload.category_id) throw new Error("Category is required");
-  if (!payload.name_bg && !payload.name_en) throw new Error("Name BG or Name EN is required");
+  if (!payload.name_bg) throw new Error("BG name is required");
+  if (!payload.image_url) throw new Error("Product image is required");
   if (payload.price === "" || payload.price === null || payload.price === undefined || Number.isNaN(Number(payload.price))) {
     throw new Error("Price is required");
   }

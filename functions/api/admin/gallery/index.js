@@ -48,7 +48,7 @@ export async function onRequestPost(context) {
       VALUES (?, ?, ?, ?, ?, ?)
     `).bind(
       payload.title || "",
-      payload.alt || "",
+      payload.alt || payload.title || "",
       payload.image_url,
       payload.image_key || imageKey(payload.image_url),
       Number(payload.sort_order) || 0,
@@ -88,7 +88,7 @@ export async function updateGalleryItemWithPayload(context, id, payload) {
       WHERE id = ?
     `).bind(
       payload.title || "",
-      payload.alt || "",
+      payload.alt || payload.title || "",
       payload.image_url,
       payload.image_key || imageKey(payload.image_url),
       Number(payload.sort_order) || 0,
@@ -137,7 +137,8 @@ export async function softDeleteGalleryItem(context, id) {
 }
 
 function validateGallery(payload) {
-  if (!payload.image_url) throw new Error("Image URL is required");
+  if (!payload.title) throw new Error("Gallery title is required");
+  if (!payload.image_url) throw new Error("Gallery image is required");
 }
 
 function imageKey(imageUrl) {

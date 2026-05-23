@@ -128,7 +128,7 @@ export async function deleteCategory(context, id) {
       .first();
 
     if (linkedItem) {
-      return json({ success: false, error: "Category has menu items. Move or delete them first." }, 400);
+      return json({ success: false, error: "Първо преместете или скрийте продуктите в тази категория." }, 400);
     }
 
     await db.prepare("DELETE FROM categories WHERE id = ?")

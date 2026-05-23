@@ -18,19 +18,19 @@ export async function onRequestPost(context) {
     const type = String(formData.get("type") || "").trim();
 
     if (!file || typeof file === "string") {
-      return jsonResponse({ success: false, error: "Missing image file" }, 400);
+      return jsonResponse({ success: false, error: "Моля, изберете снимка." }, 400);
     }
 
     if (type !== "gallery" && type !== "menu") {
-      return jsonResponse({ success: false, error: "Upload type must be gallery or menu" }, 400);
+      return jsonResponse({ success: false, error: "Невалиден тип качване." }, 400);
     }
 
     if (!ALLOWED_TYPES.has(file.type)) {
-      return jsonResponse({ success: false, error: "Only JPG, PNG, and WebP images are allowed" }, 415);
+      return jsonResponse({ success: false, error: "Моля, качете JPG, PNG или WEBP снимка." }, 415);
     }
 
     if (file.size > MAX_UPLOAD_BYTES) {
-      return jsonResponse({ success: false, error: "Image must be 5MB or smaller" }, 413);
+      return jsonResponse({ success: false, error: "Снимката е твърде голяма. Максимумът е 5MB." }, 413);
     }
 
     const extension = ALLOWED_TYPES.get(file.type);

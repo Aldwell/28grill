@@ -47,6 +47,7 @@
           <h2>Menu Items</h2>
           <button type="button" data-new-menu-item>New item</button>
         </div>
+        <p class="admin-note">For normal use, choose Hide from site instead of Delete.</p>
         <div class="admin-table-wrap">
           <table class="admin-table">
             <thead>
@@ -74,7 +75,7 @@
             </select>
           </label>
           <div class="form-grid">
-            <label>Name BG<input name="name_bg" type="text"></label>
+            <label>Name BG<input name="name_bg" type="text" required></label>
             <label>Name EN<input name="name_en" type="text"></label>
             <label>Name FR<input name="name_fr" type="text"></label>
             <label>Name IT<input name="name_it" type="text"></label>
@@ -92,7 +93,7 @@
           <div class="form-grid compact">
             <label>Price<input name="price" type="number" min="0" step="0.01" required></label>
             <label>Image URL<input name="image_url" type="text" readonly placeholder="Uploaded image URL fills automatically"></label>
-            <label>Sort order<input name="sort_order" type="number" step="1"></label>
+            <input name="sort_order" type="hidden">
             <label class="checkbox-row"><input name="is_active" type="checkbox" checked> Active</label>
             <label class="checkbox-row"><input name="is_available" type="checkbox" checked> Available</label>
           </div>
@@ -113,6 +114,16 @@
             </div>
             <p class="admin-note">Use JPG, PNG or WEBP. Max 5MB. Recommended: WEBP, 1200–1600px wide.</p>
             <p class="admin-note" data-fries-special-note hidden>Fries item uses special options on the public menu.</p>
+            <p class="admin-note" data-fries-price-note hidden>Този продукт има специални опции на сайта.</p>
+          </div>
+          <div class="admin-preview-card" data-menu-preview>
+            <div class="admin-preview-media"><span>No image</span></div>
+            <div>
+              <p class="admin-preview-category">Menu item</p>
+              <h3>Product preview</h3>
+              <p class="admin-preview-description">Fill the form to preview the item.</p>
+              <strong class="admin-preview-price">€0</strong>
+            </div>
           </div>
           <div class="form-actions">
             <button type="submit">Save item</button>
@@ -126,6 +137,7 @@
           <h2>Categories</h2>
           <button type="button" data-new-category>New category</button>
         </div>
+        <p class="admin-warning">Do not edit categories unless needed.</p>
         <div class="admin-table-wrap">
           <table class="admin-table">
             <thead>
@@ -171,6 +183,7 @@
           <h2>Gallery</h2>
           <button type="button" data-new-gallery-item>New gallery item</button>
         </div>
+        <p class="admin-note">For normal use, choose Hide from site instead of Delete.</p>
         <div class="admin-table-wrap">
           <table class="admin-table">
             <thead>
@@ -195,7 +208,7 @@
             <label>Alt<input name="alt" type="text"></label>
             <label>Image URL<input name="image_url" type="text" readonly placeholder="Uploaded image URL fills automatically"></label>
             <input name="image_key" type="hidden">
-            <label>Sort order<input name="sort_order" type="number" step="1"></label>
+            <input name="sort_order" type="hidden">
             <label class="checkbox-row"><input name="is_active" type="checkbox" checked> Active</label>
           </div>
           <div class="image-upload-shell">
