@@ -10,6 +10,7 @@ const tabs = document.querySelectorAll('[data-tab]');
 const panels = document.querySelectorAll('[data-panel]');
 const imageInput = document.querySelector('[data-image-input]');
 const imagePreview = document.querySelector('[data-image-preview]');
+const galleryImageInput = document.querySelector('[data-gallery-image-input]');
 const galleryImagePreview = document.querySelector('[data-gallery-image-preview]');
 const removeImageButton = document.querySelector('[data-remove-image]');
 const menuItemsList = document.querySelector('[data-menu-items-list]');
@@ -128,6 +129,30 @@ async function sendJson(url, method, payload) {
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify(payload),
   });
+}
+
+async function uploadImage(fileInput, type) {
+  const file = fileInput?.files?.[0];
+  if (!file) throw new Error('Choose an image first.');
+
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('type', type);
+
+  console.log('[Admin upload request]', '/api/admin/upload', type, file.name, file.type, file.size);
+  const response = await fetch('/api/admin/upload', {
+    method: 'POST',
+    body: formData,
+  });
+  const data = await response.json().catch(() => ({}));
+  console.log('[Admin upload response]', response.status, data);
+
+  if (!response.ok || data.success === false) {
+    throw new Error(data.error || `Upload failed: ${response.status}`);
+  }
+
+  if (data.warning) console.warn(data.warning);
+  return data;
 }
 
 async function loadAdminData() {
@@ -286,7 +311,7 @@ function resetGalleryForm() {
 function fillGalleryForm(image) {
   if (!galleryForm || !image) return;
   resetGalleryForm();
-  ['id', 'title', 'alt', 'image_url', 'sort_order'].forEach((field) => {
+  ['id', 'title', 'alt', 'image_url', 'image_key', 'sort_order'].forEach((field) => {
     if (galleryForm.elements[field]) galleryForm.elements[field].value = image[field] ?? '';
   });
   galleryForm.elements.is_active.checked = Boolean(image.is_active);
@@ -357,6 +382,7 @@ function galleryPayload() {
     title: formData.get('title')?.trim(),
     alt: formData.get('alt')?.trim(),
     image_url: imageUrl,
+    image_key: formData.get('image_key')?.trim(),
     sort_order: asInt(formData.get('sort_order')),
     is_active: asBool(formData.get('is_active')),
   };
@@ -417,6 +443,33 @@ document.addEventListener('click', async (event) => {
       scrollToForm(galleryForm, '[name="title"]');
     }
     if (target.matches('[data-cancel-gallery-edit]')) resetGalleryForm();
+
+    if (target.matches('[data-replace-image]')) {
+      imageInput?.click();
+    }
+
+    if (target.matches('[data-upload-menu-image]')) {
+      const data = await uploadImage(imageInput, 'menu');
+      menuItemForm.elements.image_url.value = data.image_url || '';
+      menuItemForm.elements.image_key.value = data.image_key || '';
+      setPreview(imagePreview, data.image_url, menuItemForm.elements.image_alt?.value || '');
+      setAdminMessage('Menu image uploaded.');
+    }
+
+    if (target.matches('[data-upload-gallery-image]')) {
+      const data = await uploadImage(galleryImageInput, 'gallery');
+      galleryForm.elements.image_url.value = data.image_url || '';
+      galleryForm.elements.image_key.value = data.image_key || '';
+      setPreview(galleryImagePreview, data.image_url, galleryForm.elements.alt?.value || galleryForm.elements.title?.value || '');
+      setAdminMessage('Gallery image uploaded.');
+    }
+
+    if (target.matches('[data-remove-gallery-image]')) {
+      if (galleryImageInput) galleryImageInput.value = '';
+      if (galleryForm?.elements.image_url) galleryForm.elements.image_url.value = '';
+      if (galleryForm?.elements.image_key) galleryForm.elements.image_key.value = '';
+      setPreview(galleryImagePreview, '');
+    }
 
     const menuEditId = target.dataset.menuEdit;
     if (menuEditId) {
@@ -566,6 +619,14 @@ imageInput?.addEventListener('change', () => {
 
   const imageUrl = URL.createObjectURL(file);
   imagePreview.innerHTML = `<img src="${imageUrl}" alt="Selected product preview">`;
+});
+
+galleryImageInput?.addEventListener('change', () => {
+  const file = galleryImageInput.files?.[0];
+  if (!file || !galleryImagePreview) return;
+
+  const imageUrl = URL.createObjectURL(file);
+  galleryImagePreview.innerHTML = `<img src="${imageUrl}" alt="Selected gallery preview">`;
 });
 
 removeImageButton?.addEventListener('click', () => {

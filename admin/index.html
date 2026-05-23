@@ -107,10 +107,11 @@
             <input name="image_key" type="hidden">
             <label>Image alt<input name="image_alt" type="text"></label>
             <div class="image-actions">
+              <button type="button" data-upload-menu-image>Upload image</button>
               <button type="button" data-replace-image>Replace image</button>
               <button type="button" data-remove-image>Remove image</button>
             </div>
-            <p class="admin-note">Upload API will be connected in the next phase. Max 5MB. JPG, PNG, or WebP.</p>
+            <p class="admin-note">Use JPG, PNG or WEBP. Max 5MB. Recommended: WEBP, 1200–1600px wide.</p>
           </div>
           <div class="form-actions">
             <button type="submit">Save item</button>
@@ -192,8 +193,20 @@
             <label>Title<input name="title" type="text"></label>
             <label>Alt<input name="alt" type="text"></label>
             <label>Image URL<input name="image_url" type="text" required placeholder="assets/gallery/gallery-1.webp"></label>
+            <input name="image_key" type="hidden">
             <label>Sort order<input name="sort_order" type="number" step="1"></label>
             <label class="checkbox-row"><input name="is_active" type="checkbox" checked> Active</label>
+          </div>
+          <div class="image-upload-shell">
+            <label>
+              Gallery image
+              <input name="image" type="file" accept="image/jpeg,image/png,image/webp" data-gallery-image-input>
+            </label>
+            <div class="image-actions">
+              <button type="button" data-upload-gallery-image>Upload image</button>
+              <button type="button" data-remove-gallery-image>Remove image</button>
+            </div>
+            <p class="admin-note">Use JPG, PNG or WEBP. Max 5MB. Recommended: WEBP, 1200–1600px wide.</p>
           </div>
           <div class="image-preview" data-gallery-image-preview>
             <span>No image selected</span>
