@@ -52,6 +52,7 @@
             <thead>
               <tr>
                 <th>ID</th>
+                <th>Image</th>
                 <th>Name</th>
                 <th>Price</th>
                 <th>Category</th>
@@ -60,7 +61,7 @@
               </tr>
             </thead>
             <tbody data-menu-items-list>
-              <tr><td colspan="6">Login to load menu items.</td></tr>
+              <tr><td colspan="7">Login to load menu items.</td></tr>
             </tbody>
           </table>
         </div>
@@ -193,6 +194,9 @@
             <label>Image URL<input name="image_url" type="text" required placeholder="assets/gallery/gallery-1.webp"></label>
             <label>Sort order<input name="sort_order" type="number" step="1"></label>
             <label class="checkbox-row"><input name="is_active" type="checkbox" checked> Active</label>
+          </div>
+          <div class="image-preview" data-gallery-image-preview>
+            <span>No image selected</span>
           </div>
           <div class="form-actions">
             <button type="submit">Save gallery item</button>

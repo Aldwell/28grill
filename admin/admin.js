@@ -10,6 +10,7 @@ const tabs = document.querySelectorAll('[data-tab]');
 const panels = document.querySelectorAll('[data-panel]');
 const imageInput = document.querySelector('[data-image-input]');
 const imagePreview = document.querySelector('[data-image-preview]');
+const galleryImagePreview = document.querySelector('[data-gallery-image-preview]');
 const removeImageButton = document.querySelector('[data-remove-image]');
 const menuItemsList = document.querySelector('[data-menu-items-list]');
 const categoriesList = document.querySelector('[data-categories-list]');
@@ -76,6 +77,39 @@ function asBool(value) {
   return value ? 1 : 0;
 }
 
+function normalizeImageUrl(imageUrl) {
+  const value = String(imageUrl || '').trim();
+  if (!value) return '';
+  if (/^https?:\/\//i.test(value) || value.startsWith('/')) return value;
+  if (value.startsWith('./')) return `/${value.slice(2)}`;
+  if (value.startsWith('assets/')) return `/${value}`;
+  return value;
+}
+
+function imageMarkup(imageUrl, alt = '', className = 'admin-thumb') {
+  const normalized = normalizeImageUrl(imageUrl);
+  if (!normalized) return '<span class="muted">No image</span>';
+  return `<img class="${className}" src="${escapeHtml(normalized)}" alt="${escapeHtml(alt)}" onerror="this.replaceWith(Object.assign(document.createElement('span'), { className: 'muted', textContent: 'Image not found' }))">`;
+}
+
+function setPreview(previewElement, imageUrl, alt = '') {
+  if (!previewElement) return;
+  const normalized = normalizeImageUrl(imageUrl);
+  previewElement.innerHTML = normalized
+    ? `<img src="${escapeHtml(normalized)}" alt="${escapeHtml(alt)}" onerror="this.replaceWith(Object.assign(document.createElement('span'), { textContent: 'Image not found' }))">`
+    : '<span>No image selected</span>';
+}
+
+function scrollToForm(formElement, focusSelector) {
+  if (!formElement) return;
+  formElement.scrollIntoView({
+    behavior: 'smooth',
+    block: 'start',
+  });
+  const focusTarget = formElement.querySelector(focusSelector || 'input:not([type="hidden"]), select, textarea');
+  window.setTimeout(() => focusTarget?.focus({ preventScroll: true }), 350);
+}
+
 async function fetchJson(url, options) {
   const method = options?.method || 'GET';
   console.log('[Admin request]', method, url, options?.body ? JSON.parse(options.body) : null);
@@ -106,7 +140,7 @@ async function loadAdminData() {
 
 async function loadMenuItems() {
   if (!menuItemsList) return;
-  menuItemsList.innerHTML = '<tr><td colspan="6">Loading menu items...</td></tr>';
+  menuItemsList.innerHTML = '<tr><td colspan="7">Loading menu items...</td></tr>';
 
   try {
     const data = await fetchJson('/api/admin/menu-items');
@@ -114,6 +148,7 @@ async function loadMenuItems() {
     menuItemsList.innerHTML = menuItems.length ? menuItems.map((item) => `
       <tr>
         <td>${item.id}</td>
+        <td>${imageMarkup(item.image_url, item.image_alt || item.display_name_bg || item.name_bg || '')}</td>
         <td>${escapeHtml(item.display_name_bg || item.name_bg || item.name || item.name_en || item.slug)}</td>
         <td>${Number(item.price || 0).toFixed(2)}</td>
         <td>${escapeHtml(item.category_title_bg || item.category_title_en || item.category_slug || '')}</td>
@@ -126,9 +161,9 @@ async function loadMenuItems() {
           </div>
         </td>
       </tr>
-    `).join('') : '<tr><td colspan="6">No menu items found.</td></tr>';
+    `).join('') : '<tr><td colspan="7">No menu items found.</td></tr>';
   } catch (error) {
-    menuItemsList.innerHTML = `<tr><td colspan="6">${escapeHtml(error.message)}</td></tr>`;
+    menuItemsList.innerHTML = `<tr><td colspan="7">${escapeHtml(error.message)}</td></tr>`;
   }
 }
 
@@ -179,7 +214,7 @@ async function loadGallery() {
     galleryList.innerHTML = galleryImages.length ? galleryImages.map((image) => `
       <tr>
         <td>${image.id}</td>
-        <td>${image.image_url ? `<img class="admin-thumb" src="${escapeHtml(image.image_url)}" alt="">` : '<span class="muted">No image</span>'}</td>
+        <td>${imageMarkup(image.image_url, image.alt || image.title || '')}</td>
         <td>${escapeHtml(image.title || '')}</td>
         <td>${escapeHtml(image.alt || '')}</td>
         <td>${image.is_active ? 'Active' : 'Inactive'}</td>
@@ -203,7 +238,7 @@ function resetMenuForm() {
   menuItemForm.elements.id.value = '';
   menuItemForm.elements.is_active.checked = true;
   menuItemForm.elements.is_available.checked = true;
-  if (imagePreview) imagePreview.innerHTML = '<span>No image selected</span>';
+  setPreview(imagePreview, '');
 }
 
 function fillMenuForm(item) {
@@ -219,11 +254,7 @@ function fillMenuForm(item) {
   });
   menuItemForm.elements.is_active.checked = Boolean(item.is_active);
   menuItemForm.elements.is_available.checked = item.is_available !== 0;
-  if (imagePreview) {
-    imagePreview.innerHTML = item.image_url
-      ? `<img src="${escapeHtml(item.image_url)}" alt="${escapeHtml(item.image_alt || '')}">`
-      : '<span>No image selected</span>';
-  }
+  setPreview(imagePreview, item.image_url, item.image_alt || item.name_bg || item.name || '');
 }
 
 function resetCategoryForm() {
@@ -247,6 +278,7 @@ function resetGalleryForm() {
   if (!galleryForm) return;
   galleryForm.elements.id.value = '';
   galleryForm.elements.is_active.checked = true;
+  setPreview(galleryImagePreview, '');
 }
 
 function fillGalleryForm(image) {
@@ -256,6 +288,7 @@ function fillGalleryForm(image) {
     if (galleryForm.elements[field]) galleryForm.elements[field].value = image[field] ?? '';
   });
   galleryForm.elements.is_active.checked = Boolean(image.is_active);
+  setPreview(galleryImagePreview, image.image_url, image.alt || image.title || '');
 }
 
 function menuPayload() {
@@ -367,15 +400,28 @@ document.addEventListener('click', async (event) => {
   if (!target) return;
 
   try {
-    if (target.matches('[data-new-menu-item]')) resetMenuForm();
+    if (target.matches('[data-new-menu-item]')) {
+      resetMenuForm();
+      scrollToForm(menuItemForm, '[name="category_id"]');
+    }
     if (target.matches('[data-cancel-menu-edit]')) resetMenuForm();
-    if (target.matches('[data-new-category]')) resetCategoryForm();
+    if (target.matches('[data-new-category]')) {
+      resetCategoryForm();
+      scrollToForm(categoryForm, '[name="slug"]');
+    }
     if (target.matches('[data-cancel-category-edit]')) resetCategoryForm();
-    if (target.matches('[data-new-gallery-item]')) resetGalleryForm();
+    if (target.matches('[data-new-gallery-item]')) {
+      resetGalleryForm();
+      scrollToForm(galleryForm, '[name="title"]');
+    }
     if (target.matches('[data-cancel-gallery-edit]')) resetGalleryForm();
 
     const menuEditId = target.dataset.menuEdit;
-    if (menuEditId) fillMenuForm(menuItems.find((item) => String(item.id) === menuEditId));
+    if (menuEditId) {
+      fillMenuForm(menuItems.find((item) => String(item.id) === menuEditId));
+      scrollToForm(menuItemForm, '[name="category_id"]');
+      setAdminMessage('Editing menu item.');
+    }
 
     const menuDeleteId = target.dataset.menuDelete;
     if (menuDeleteId) {
@@ -397,7 +443,11 @@ document.addEventListener('click', async (event) => {
     }
 
     const categoryEditId = target.dataset.categoryEdit;
-    if (categoryEditId) fillCategoryForm(categories.find((category) => String(category.id) === categoryEditId));
+    if (categoryEditId) {
+      fillCategoryForm(categories.find((category) => String(category.id) === categoryEditId));
+      scrollToForm(categoryForm, '[name="slug"]');
+      setAdminMessage('Editing category.');
+    }
 
     const categoryToggleId = target.dataset.categoryToggle;
     if (categoryToggleId) {
@@ -413,7 +463,11 @@ document.addEventListener('click', async (event) => {
     }
 
     const galleryEditId = target.dataset.galleryEdit;
-    if (galleryEditId) fillGalleryForm(galleryImages.find((image) => String(image.id) === galleryEditId));
+    if (galleryEditId) {
+      fillGalleryForm(galleryImages.find((image) => String(image.id) === galleryEditId));
+      scrollToForm(galleryForm, '[name="title"]');
+      setAdminMessage('Editing gallery item.');
+    }
 
     const galleryDeleteId = target.dataset.galleryDelete;
     if (galleryDeleteId) {
@@ -511,7 +565,15 @@ removeImageButton?.addEventListener('click', () => {
   if (imageInput) imageInput.value = '';
   if (menuItemForm?.elements.image_url) menuItemForm.elements.image_url.value = '';
   if (menuItemForm?.elements.image_key) menuItemForm.elements.image_key.value = '';
-  if (imagePreview) imagePreview.innerHTML = '<span>No image selected</span>';
+  setPreview(imagePreview, '');
+});
+
+menuItemForm?.elements.image_url?.addEventListener('input', () => {
+  setPreview(imagePreview, menuItemForm.elements.image_url.value, menuItemForm.elements.image_alt?.value || '');
+});
+
+galleryForm?.elements.image_url?.addEventListener('input', () => {
+  setPreview(galleryImagePreview, galleryForm.elements.image_url.value, galleryForm.elements.alt?.value || galleryForm.elements.title?.value || '');
 });
 
 if (localStorage.getItem(SESSION_KEY) === 'true') {
