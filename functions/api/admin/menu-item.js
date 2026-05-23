@@ -34,9 +34,12 @@ export async function onRequestPost(context) {
         category_id, slug, name, description,
         name_bg, name_en, name_fr, name_it, name_es, name_el,
         description_bg, description_en, description_fr, description_it, description_es, description_el,
+        ingredients_bg, ingredients_en, ingredients_fr, ingredients_it, ingredients_es, ingredients_el,
+        allergens_bg, allergens_en, allergens_fr, allergens_it, allergens_es, allergens_el,
+        badges,
         price, image_url, image_key, image_alt, sort_order, is_active, is_available
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).bind(
       Number(payload.category_id),
       slug,
@@ -54,6 +57,19 @@ export async function onRequestPost(context) {
       payload.description_it || "",
       payload.description_es || "",
       payload.description_el || "",
+      jsonArrayString(payload.ingredients_bg),
+      jsonArrayString(payload.ingredients_en),
+      jsonArrayString(payload.ingredients_fr),
+      jsonArrayString(payload.ingredients_it),
+      jsonArrayString(payload.ingredients_es),
+      jsonArrayString(payload.ingredients_el),
+      jsonArrayString(payload.allergens_bg),
+      jsonArrayString(payload.allergens_en),
+      jsonArrayString(payload.allergens_fr),
+      jsonArrayString(payload.allergens_it),
+      jsonArrayString(payload.allergens_es),
+      jsonArrayString(payload.allergens_el),
+      jsonArrayString(payload.badges),
       Number(payload.price),
       payload.image_url || "",
       payload.image_key || "",
@@ -116,6 +132,19 @@ export async function updateMenuItemWithPayload(context, id, payload) {
         description_it = ?,
         description_es = ?,
         description_el = ?,
+        ingredients_bg = ?,
+        ingredients_en = ?,
+        ingredients_fr = ?,
+        ingredients_it = ?,
+        ingredients_es = ?,
+        ingredients_el = ?,
+        allergens_bg = ?,
+        allergens_en = ?,
+        allergens_fr = ?,
+        allergens_it = ?,
+        allergens_es = ?,
+        allergens_el = ?,
+        badges = ?,
         price = ?,
         image_url = ?,
         image_key = ?,
@@ -141,6 +170,19 @@ export async function updateMenuItemWithPayload(context, id, payload) {
       payload.description_it || "",
       payload.description_es || "",
       payload.description_el || "",
+      jsonArrayString(payload.ingredients_bg),
+      jsonArrayString(payload.ingredients_en),
+      jsonArrayString(payload.ingredients_fr),
+      jsonArrayString(payload.ingredients_it),
+      jsonArrayString(payload.ingredients_es),
+      jsonArrayString(payload.ingredients_el),
+      jsonArrayString(payload.allergens_bg),
+      jsonArrayString(payload.allergens_en),
+      jsonArrayString(payload.allergens_fr),
+      jsonArrayString(payload.allergens_it),
+      jsonArrayString(payload.allergens_es),
+      jsonArrayString(payload.allergens_el),
+      jsonArrayString(payload.badges),
       Number(payload.price),
       payload.image_url || "",
       payload.image_key || "",
@@ -205,6 +247,20 @@ function validateMenuItem(payload) {
   if (!payload.image_url) throw new Error("Product image is required");
   if (payload.price === "" || payload.price === null || payload.price === undefined || Number.isNaN(Number(payload.price))) {
     throw new Error("Price is required");
+  }
+}
+
+function jsonArrayString(value) {
+  if (!value) return "[]";
+  if (Array.isArray(value)) return JSON.stringify(value);
+  try {
+    const parsed = JSON.parse(value);
+    return JSON.stringify(Array.isArray(parsed) ? parsed : []);
+  } catch (error) {
+    return JSON.stringify(String(value)
+      .split(/\r?\n|,/)
+      .map((entry) => entry.trim())
+      .filter(Boolean));
   }
 }
 

@@ -77,6 +77,31 @@ function apiLocalizedObject(item, field) {
   };
 }
 
+function parseJsonArray(value) {
+  if (Array.isArray(value)) return value;
+  if (!value) return [];
+  try {
+    const parsed = JSON.parse(value);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (error) {
+    return String(value)
+      .split(/\r?\n|,/)
+      .map((entry) => entry.trim())
+      .filter(Boolean);
+  }
+}
+
+function apiLocalizedList(item, field) {
+  return {
+    bg: parseJsonArray(item[`${field}_bg`]),
+    en: parseJsonArray(item[`${field}_en`] || item[`${field}_bg`]),
+    fr: parseJsonArray(item[`${field}_fr`] || item[`${field}_en`] || item[`${field}_bg`]),
+    it: parseJsonArray(item[`${field}_it`] || item[`${field}_en`] || item[`${field}_bg`]),
+    es: parseJsonArray(item[`${field}_es`] || item[`${field}_en`] || item[`${field}_bg`]),
+    el: parseJsonArray(item[`${field}_el`] || item[`${field}_en`] || item[`${field}_bg`]),
+  };
+}
+
 function apiCategoryLabel(category) {
   return {
     bg: category.title_bg || category.name || category.title_en || category.slug || '',
@@ -93,6 +118,9 @@ function mapApiMenuItem(item, categoriesById) {
   const image = normalizeMenuImageUrl(item.image_url) || fallbackProductImage();
   const name = apiLocalizedObject(item, 'name');
   const categorySlug = category.slug || item.category_slug || item.category || 'menu';
+  const badges = parseJsonArray(item.badges);
+  const spicy = badges.includes('spicy');
+  const badge = badges.find((entry) => entry !== 'spicy') || '';
 
   if (categorySlug === 'fries') {
     const loadedFries = getStaticLoadedFriesProduct();
@@ -117,6 +145,12 @@ function mapApiMenuItem(item, categoriesById) {
     description: apiLocalizedObject(item, 'description'),
     image,
     imageAlt: item.image_alt || localized(name),
+    ingredients: apiLocalizedList(item, 'ingredients'),
+    allergens: parseJsonArray(
+      item[`allergens_${currentLanguage}`]
+      || item.allergens_bg
+      || item.allergens_en
+    ),
     prices: {
       itemEUR: Number(item.price) || 0,
     },
@@ -128,7 +162,9 @@ function mapApiMenuItem(item, categoriesById) {
       es: 'Burger',
       el: 'Burger',
     },
-    badges: [],
+    badge,
+    spicy,
+    badges,
     isActive: item.is_active !== 0,
     available: item.is_available !== 0,
   };

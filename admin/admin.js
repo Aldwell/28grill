@@ -30,6 +30,7 @@ const LOADED_FRIES_IMAGE_KEY = 'images/menu/fries/cheddar-fries.webp';
 const MAX_UPLOAD_BYTES = 5 * 1024 * 1024;
 const ALLOWED_UPLOAD_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
 const DELETE_CONFIRM_MESSAGE = 'Това ще изтрие елемента завинаги. Сигурни ли сте?';
+const META_LANGUAGES = ['bg', 'en', 'fr', 'it', 'es', 'el'];
 
 let menuItems = [];
 let categories = [];
@@ -144,6 +145,35 @@ function validateUploadFile(file) {
   }
 }
 
+function parseJsonArray(value) {
+  if (Array.isArray(value)) return value;
+  if (!value) return [];
+  try {
+    const parsed = JSON.parse(value);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (error) {
+    return String(value)
+      .split(/\r?\n|,/)
+      .map((entry) => entry.trim())
+      .filter(Boolean);
+  }
+}
+
+function jsonArrayToLines(value) {
+  return parseJsonArray(value).join('\n');
+}
+
+function linesToJson(value) {
+  return JSON.stringify(String(value || '')
+    .split(/\r?\n/)
+    .map((entry) => entry.trim())
+    .filter(Boolean));
+}
+
+function formLinesJson(formData, field) {
+  return linesToJson(formData.get(field));
+}
+
 function imageMarkup(imageUrl, alt = '', className = 'admin-thumb') {
   const normalized = normalizeImageUrl(imageUrl);
   if (!normalized) return '<span class="muted">No image</span>';
@@ -178,6 +208,16 @@ function updateMenuPreview() {
   menuPreview.querySelector('h3').textContent = name;
   menuPreview.querySelector('.admin-preview-description').textContent = description;
   menuPreview.querySelector('.admin-preview-price').textContent = price ? `€${price.toFixed(2)}` : '€0';
+
+  const meta = menuPreview.querySelector('[data-menu-preview-meta]');
+  if (meta) {
+    const ingredients = parseJsonArray(linesToJson(menuItemForm.elements.ingredients_bg?.value || ''));
+    const allergens = parseJsonArray(linesToJson(menuItemForm.elements.allergens_bg?.value || ''));
+    meta.innerHTML = [
+      ingredients.length ? `<div><strong>Ingredients:</strong> ${escapeHtml(ingredients.join(', '))}</div>` : '',
+      allergens.length ? `<div><strong>Allergens:</strong> ${escapeHtml(allergens.join(', '))}</div>` : '',
+    ].join('');
+  }
 }
 
 function updateGalleryPreviewFromForm() {
@@ -371,6 +411,17 @@ function fillMenuForm(item) {
   fields.forEach((field) => {
     if (menuItemForm.elements[field]) menuItemForm.elements[field].value = item[field] ?? '';
   });
+  META_LANGUAGES.forEach((language) => {
+    const ingredientsField = `ingredients_${language}`;
+    const allergensField = `allergens_${language}`;
+    if (menuItemForm.elements[ingredientsField]) {
+      menuItemForm.elements[ingredientsField].value = jsonArrayToLines(item[ingredientsField]);
+    }
+    if (menuItemForm.elements[allergensField]) {
+      menuItemForm.elements[allergensField].value = jsonArrayToLines(item[allergensField]);
+    }
+  });
+  if (menuItemForm.elements.badges) menuItemForm.elements.badges.value = jsonArrayToLines(item.badges);
   menuItemForm.elements.is_active.checked = Boolean(item.is_active);
   menuItemForm.elements.is_available.checked = item.is_available !== 0;
   if (isLoadedFriesItem(item) && !menuItemForm.elements.image_url.value) {
@@ -449,6 +500,19 @@ function menuPayload() {
     description_it: formData.get('description_it')?.trim(),
     description_es: formData.get('description_es')?.trim(),
     description_el: formData.get('description_el')?.trim(),
+    ingredients_bg: formLinesJson(formData, 'ingredients_bg'),
+    ingredients_en: formLinesJson(formData, 'ingredients_en'),
+    ingredients_fr: formLinesJson(formData, 'ingredients_fr'),
+    ingredients_it: formLinesJson(formData, 'ingredients_it'),
+    ingredients_es: formLinesJson(formData, 'ingredients_es'),
+    ingredients_el: formLinesJson(formData, 'ingredients_el'),
+    allergens_bg: formLinesJson(formData, 'allergens_bg'),
+    allergens_en: formLinesJson(formData, 'allergens_en'),
+    allergens_fr: formLinesJson(formData, 'allergens_fr'),
+    allergens_it: formLinesJson(formData, 'allergens_it'),
+    allergens_es: formLinesJson(formData, 'allergens_es'),
+    allergens_el: formLinesJson(formData, 'allergens_el'),
+    badges: formLinesJson(formData, 'badges'),
     price: isFries ? Number(currentItem?.price || 5) : Number(formData.get('price')),
     image_url: finalImageUrl,
     image_key: formData.get('image_key')?.trim() || (isFries ? LOADED_FRIES_IMAGE_KEY : ''),
@@ -779,7 +843,7 @@ galleryForm?.elements.image_url?.addEventListener('input', () => {
   setPreview(galleryImagePreview, galleryForm.elements.image_url.value, galleryForm.elements.alt?.value || galleryForm.elements.title?.value || '');
 });
 
-['name_bg', 'description_bg', 'price', 'category_id'].forEach((field) => {
+['name_bg', 'description_bg', 'price', 'category_id', 'ingredients_bg', 'allergens_bg'].forEach((field) => {
   menuItemForm?.elements[field]?.addEventListener('input', updateMenuPreview);
   menuItemForm?.elements[field]?.addEventListener('change', updateMenuPreview);
 });

@@ -90,8 +90,25 @@
             <label>Description ES<textarea name="description_es"></textarea></label>
             <label>Description EL<textarea name="description_el"></textarea></label>
           </div>
+          <div class="form-grid">
+            <label>Ingredients BG<textarea name="ingredients_bg" placeholder="Една съставка на ред"></textarea></label>
+            <label>Ingredients EN<textarea name="ingredients_en" placeholder="One ingredient per line"></textarea></label>
+            <label>Ingredients FR<textarea name="ingredients_fr" placeholder="One ingredient per line"></textarea></label>
+            <label>Ingredients IT<textarea name="ingredients_it" placeholder="One ingredient per line"></textarea></label>
+            <label>Ingredients ES<textarea name="ingredients_es" placeholder="One ingredient per line"></textarea></label>
+            <label>Ingredients EL<textarea name="ingredients_el" placeholder="One ingredient per line"></textarea></label>
+          </div>
+          <div class="form-grid">
+            <label>Allergens BG<textarea name="allergens_bg" placeholder="gluten&#10;dairy&#10;egg"></textarea></label>
+            <label>Allergens EN<textarea name="allergens_en" placeholder="gluten&#10;dairy&#10;egg"></textarea></label>
+            <label>Allergens FR<textarea name="allergens_fr" placeholder="gluten&#10;dairy&#10;egg"></textarea></label>
+            <label>Allergens IT<textarea name="allergens_it" placeholder="gluten&#10;dairy&#10;egg"></textarea></label>
+            <label>Allergens ES<textarea name="allergens_es" placeholder="gluten&#10;dairy&#10;egg"></textarea></label>
+            <label>Allergens EL<textarea name="allergens_el" placeholder="gluten&#10;dairy&#10;egg"></textarea></label>
+          </div>
           <div class="form-grid compact">
             <label>Price<input name="price" type="number" min="0" step="0.01" required></label>
+            <label>Badges/tags<textarea name="badges" placeholder="bestSeller&#10;chefChoice&#10;spicy"></textarea></label>
             <label>Image URL<input name="image_url" type="text" readonly placeholder="Uploaded image URL fills automatically"></label>
             <input name="sort_order" type="hidden">
             <label class="checkbox-row"><input name="is_active" type="checkbox" checked> Active</label>
@@ -123,6 +140,7 @@
               <h3>Product preview</h3>
               <p class="admin-preview-description">Fill the form to preview the item.</p>
               <strong class="admin-preview-price">€0</strong>
+              <div class="admin-preview-meta" data-menu-preview-meta></div>
             </div>
           </div>
           <div class="form-actions">

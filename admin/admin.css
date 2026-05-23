@@ -289,6 +289,17 @@ button {
   font-size: 22px;
 }
 
+.admin-preview-meta {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+  margin-top: 12px;
+}
+
+.admin-preview-meta strong {
+  color: var(--text);
+}
+
 .image-actions {
   display: flex;
   flex-wrap: wrap;
