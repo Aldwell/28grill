@@ -1,4 +1,3 @@
-
 INSERT INTO categories (name, slug, title_bg, title_en, title_fr, title_it, title_es, title_el, sort_order, is_active)
 VALUES ('Smash', 'smash', 'Smash', 'Smash', 'Smash', 'Smash', 'Smash', 'Smash', 1, 1)
 ON CONFLICT(slug) DO UPDATE SET
@@ -100,6 +99,8 @@ ON CONFLICT(slug) DO UPDATE SET
 INSERT INTO menu_items (
   category_id,
   slug,
+  name,
+  description,
   name_bg,
   name_en,
   name_fr,
@@ -114,13 +115,17 @@ INSERT INTO menu_items (
   description_el,
   price,
   image_url,
+  image_key,
   image_alt,
   sort_order,
-  is_active
+  is_active,
+  is_available
 )
 VALUES (
   (SELECT id FROM categories WHERE slug = 'smash'),
   'og-cheese',
+  'OG Cheese',
+  'Двоен чедър, бекон и сос 28 в класически smash профил.',
   'OG Cheese',
   'OG Cheese',
   'OG Cheese',
@@ -135,12 +140,16 @@ VALUES (
   'Διπλό cheddar, μπέικον και Sauce 28 σε κλασικό smash.',
   9,
   './assets/images/menu/og-cheese.webp',
+  './assets/images/menu/og-cheese.webp',
   'OG Cheese',
+  1,
   1,
   1
 )
 ON CONFLICT(slug) DO UPDATE SET
   category_id = excluded.category_id,
+  name = excluded.name,
+  description = excluded.description,
   name_bg = excluded.name_bg,
   name_en = excluded.name_en,
   name_fr = excluded.name_fr,
@@ -155,14 +164,18 @@ ON CONFLICT(slug) DO UPDATE SET
   description_el = excluded.description_el,
   price = excluded.price,
   image_url = excluded.image_url,
+  image_key = excluded.image_key,
   image_alt = excluded.image_alt,
   sort_order = excluded.sort_order,
   is_active = excluded.is_active,
+  is_available = excluded.is_available,
   updated_at = CURRENT_TIMESTAMP;
 
 INSERT INTO menu_items (
   category_id,
   slug,
+  name,
+  description,
   name_bg,
   name_en,
   name_fr,
@@ -177,13 +190,17 @@ INSERT INTO menu_items (
   description_el,
   price,
   image_url,
+  image_key,
   image_alt,
   sort_order,
-  is_active
+  is_active,
+  is_available
 )
 VALUES (
   (SELECT id FROM categories WHERE slug = 'smash'),
   'northwestern',
+  'Northwestern',
+  'Пикантен burger с jalapeño, бекон, Gouda и свежи зеленчуци.',
   'Northwestern',
   'Northwestern',
   'Northwestern',
@@ -198,12 +215,16 @@ VALUES (
   'Πικάντικο burger με jalapeño, μπέικον, Gouda και φρέσκα λαχανικά.',
   9,
   './assets/images/menu/northwestern.webp',
+  './assets/images/menu/northwestern.webp',
   'Northwestern',
   2,
+  1,
   1
 )
 ON CONFLICT(slug) DO UPDATE SET
   category_id = excluded.category_id,
+  name = excluded.name,
+  description = excluded.description,
   name_bg = excluded.name_bg,
   name_en = excluded.name_en,
   name_fr = excluded.name_fr,
@@ -218,14 +239,18 @@ ON CONFLICT(slug) DO UPDATE SET
   description_el = excluded.description_el,
   price = excluded.price,
   image_url = excluded.image_url,
+  image_key = excluded.image_key,
   image_alt = excluded.image_alt,
   sort_order = excluded.sort_order,
   is_active = excluded.is_active,
+  is_available = excluded.is_available,
   updated_at = CURRENT_TIMESTAMP;
 
 INSERT INTO menu_items (
   category_id,
   slug,
+  name,
+  description,
   name_bg,
   name_en,
   name_fr,
@@ -240,13 +265,17 @@ INSERT INTO menu_items (
   description_el,
   price,
   image_url,
+  image_key,
   image_alt,
   sort_order,
-  is_active
+  is_active,
+  is_available
 )
 VALUES (
   (SELECT id FROM categories WHERE slug = 'smash'),
   'drill',
+  'Drill',
+  'Опушен BBQ вкус с Gouda, пържен лук и зелена салата.',
   'Drill',
   'Drill',
   'Drill',
@@ -261,12 +290,16 @@ VALUES (
   'Καπνιστή BBQ γεύση με Gouda, τηγανητό κρεμμύδι και πράσινο μαρούλι.',
   9,
   './assets/images/menu/drill.webp',
+  './assets/images/menu/drill.webp',
   'Drill',
   3,
+  1,
   1
 )
 ON CONFLICT(slug) DO UPDATE SET
   category_id = excluded.category_id,
+  name = excluded.name,
+  description = excluded.description,
   name_bg = excluded.name_bg,
   name_en = excluded.name_en,
   name_fr = excluded.name_fr,
@@ -281,14 +314,18 @@ ON CONFLICT(slug) DO UPDATE SET
   description_el = excluded.description_el,
   price = excluded.price,
   image_url = excluded.image_url,
+  image_key = excluded.image_key,
   image_alt = excluded.image_alt,
   sort_order = excluded.sort_order,
   is_active = excluded.is_active,
+  is_available = excluded.is_available,
   updated_at = CURRENT_TIMESTAMP;
 
 INSERT INTO menu_items (
   category_id,
   slug,
+  name,
+  description,
   name_bg,
   name_en,
   name_fr,
@@ -303,13 +340,17 @@ INSERT INTO menu_items (
   description_el,
   price,
   image_url,
+  image_key,
   image_alt,
   sort_order,
-  is_active
+  is_active,
+  is_available
 )
 VALUES (
   (SELECT id FROM categories WHERE slug = 'smash'),
   'smacky',
+  'Smacky',
+  'Печен лук, два вида сирене и специален сос.',
   'Smacky',
   'Smacky',
   'Smacky',
@@ -324,12 +365,16 @@ VALUES (
   'Ψητό κρεμμύδι, δύο τυριά και ειδική σάλτσα.',
   9,
   './assets/images/menu/smacky.webp',
+  './assets/images/menu/smacky.webp',
   'Smacky',
   4,
+  1,
   1
 )
 ON CONFLICT(slug) DO UPDATE SET
   category_id = excluded.category_id,
+  name = excluded.name,
+  description = excluded.description,
   name_bg = excluded.name_bg,
   name_en = excluded.name_en,
   name_fr = excluded.name_fr,
@@ -344,14 +389,18 @@ ON CONFLICT(slug) DO UPDATE SET
   description_el = excluded.description_el,
   price = excluded.price,
   image_url = excluded.image_url,
+  image_key = excluded.image_key,
   image_alt = excluded.image_alt,
   sort_order = excluded.sort_order,
   is_active = excluded.is_active,
+  is_available = excluded.is_available,
   updated_at = CURRENT_TIMESTAMP;
 
 INSERT INTO menu_items (
   category_id,
   slug,
+  name,
+  description,
   name_bg,
   name_en,
   name_fr,
@@ -366,13 +415,17 @@ INSERT INTO menu_items (
   description_el,
   price,
   image_url,
+  image_key,
   image_alt,
   sort_order,
-  is_active
+  is_active,
+  is_available
 )
 VALUES (
   (SELECT id FROM categories WHERE slug = 'smash'),
   'el-gringo',
+  'El Gringo',
+  'Лют характер с печен лук и фъстъчен killer сос.',
   'El Gringo',
   'El Gringo',
   'El Gringo',
@@ -387,12 +440,16 @@ VALUES (
   'Πικάντικος χαρακτήρας με ψητό κρεμμύδι και killer σάλτσα φυστικιού.',
   9,
   './assets/images/menu/el-gringo.webp',
+  './assets/images/menu/el-gringo.webp',
   'El Gringo',
   5,
+  1,
   1
 )
 ON CONFLICT(slug) DO UPDATE SET
   category_id = excluded.category_id,
+  name = excluded.name,
+  description = excluded.description,
   name_bg = excluded.name_bg,
   name_en = excluded.name_en,
   name_fr = excluded.name_fr,
@@ -407,14 +464,18 @@ ON CONFLICT(slug) DO UPDATE SET
   description_el = excluded.description_el,
   price = excluded.price,
   image_url = excluded.image_url,
+  image_key = excluded.image_key,
   image_alt = excluded.image_alt,
   sort_order = excluded.sort_order,
   is_active = excluded.is_active,
+  is_available = excluded.is_available,
   updated_at = CURRENT_TIMESTAMP;
 
 INSERT INTO menu_items (
   category_id,
   slug,
+  name,
+  description,
   name_bg,
   name_en,
   name_fr,
@@ -429,13 +490,17 @@ INSERT INTO menu_items (
   description_el,
   price,
   image_url,
+  image_key,
   image_alt,
   sort_order,
-  is_active
+  is_active,
+  is_available
 )
 VALUES (
   (SELECT id FROM categories WHERE slug = 'smash'),
   'the-mayor',
+  'The Mayor',
+  'Богат burger с яйце, чедър, свежа салата и специален сос.',
   'The Mayor',
   'The Mayor',
   'The Mayor',
@@ -450,12 +515,16 @@ VALUES (
   'Πλούσιο burger με αυγό, cheddar, φρέσκο μαρούλι και ειδική σάλτσα.',
   9,
   './assets/images/menu/the-mayor.webp',
+  './assets/images/menu/the-mayor.webp',
   'The Mayor',
   6,
+  1,
   1
 )
 ON CONFLICT(slug) DO UPDATE SET
   category_id = excluded.category_id,
+  name = excluded.name,
+  description = excluded.description,
   name_bg = excluded.name_bg,
   name_en = excluded.name_en,
   name_fr = excluded.name_fr,
@@ -470,14 +539,18 @@ ON CONFLICT(slug) DO UPDATE SET
   description_el = excluded.description_el,
   price = excluded.price,
   image_url = excluded.image_url,
+  image_key = excluded.image_key,
   image_alt = excluded.image_alt,
   sort_order = excluded.sort_order,
   is_active = excluded.is_active,
+  is_available = excluded.is_available,
   updated_at = CURRENT_TIMESTAMP;
 
 INSERT INTO menu_items (
   category_id,
   slug,
+  name,
+  description,
   name_bg,
   name_en,
   name_fr,
@@ -492,13 +565,17 @@ INSERT INTO menu_items (
   description_el,
   price,
   image_url,
+  image_key,
   image_alt,
   sort_order,
-  is_active
+  is_active,
+  is_available
 )
 VALUES (
   (SELECT id FROM categories WHERE slug = 'smash'),
   'big-d',
+  'Big D',
+  'Свеж smash с чедър, маруля, домати и сос 28.',
   'Big D',
   'Big D',
   'Big D',
@@ -513,12 +590,16 @@ VALUES (
   'Φρέσκο smash με cheddar, μαρούλι, ντομάτα και Sauce 28.',
   9,
   './assets/images/menu/big-d.webp',
+  './assets/images/menu/big-d.webp',
   'Big D',
   7,
+  1,
   1
 )
 ON CONFLICT(slug) DO UPDATE SET
   category_id = excluded.category_id,
+  name = excluded.name,
+  description = excluded.description,
   name_bg = excluded.name_bg,
   name_en = excluded.name_en,
   name_fr = excluded.name_fr,
@@ -533,14 +614,18 @@ ON CONFLICT(slug) DO UPDATE SET
   description_el = excluded.description_el,
   price = excluded.price,
   image_url = excluded.image_url,
+  image_key = excluded.image_key,
   image_alt = excluded.image_alt,
   sort_order = excluded.sort_order,
   is_active = excluded.is_active,
+  is_available = excluded.is_available,
   updated_at = CURRENT_TIMESTAMP;
 
 INSERT INTO menu_items (
   category_id,
   slug,
+  name,
+  description,
   name_bg,
   name_en,
   name_fr,
@@ -555,13 +640,17 @@ INSERT INTO menu_items (
   description_el,
   price,
   image_url,
+  image_key,
   image_alt,
   sort_order,
-  is_active
+  is_active,
+  is_available
 )
 VALUES (
   (SELECT id FROM categories WHERE slug = 'smash'),
   'maynyak',
+  'Maynyak',
+  'Силен signature burger с бекон, яйце, ranch, BBQ и фъстъчен сос.',
   'Maynyak',
   'Maynyak',
   'Maynyak',
@@ -576,12 +665,16 @@ VALUES (
   'Δυνατό signature burger με μπέικον, αυγό, ranch, BBQ και σάλτσα φυστικιού.',
   9,
   './assets/images/menu/maynyak.webp',
+  './assets/images/menu/maynyak.webp',
   'Maynyak',
   8,
+  1,
   1
 )
 ON CONFLICT(slug) DO UPDATE SET
   category_id = excluded.category_id,
+  name = excluded.name,
+  description = excluded.description,
   name_bg = excluded.name_bg,
   name_en = excluded.name_en,
   name_fr = excluded.name_fr,
@@ -596,14 +689,18 @@ ON CONFLICT(slug) DO UPDATE SET
   description_el = excluded.description_el,
   price = excluded.price,
   image_url = excluded.image_url,
+  image_key = excluded.image_key,
   image_alt = excluded.image_alt,
   sort_order = excluded.sort_order,
   is_active = excluded.is_active,
+  is_available = excluded.is_available,
   updated_at = CURRENT_TIMESTAMP;
 
 INSERT INTO menu_items (
   category_id,
   slug,
+  name,
+  description,
   name_bg,
   name_en,
   name_fr,
@@ -618,13 +715,17 @@ INSERT INTO menu_items (
   description_el,
   price,
   image_url,
+  image_key,
   image_alt,
   sort_order,
-  is_active
+  is_active,
+  is_available
 )
 VALUES (
   (SELECT id FROM categories WHERE slug = 'smash'),
   'crunch',
+  'Crunch',
+  'Минимален и плътен burger с Gouda, лук и бекон майонеза.',
   'Crunch',
   'Crunch',
   'Crunch',
@@ -639,12 +740,16 @@ VALUES (
   'Απλό και πλούσιο με Gouda, κρεμμύδι και μαγιονέζα μπέικον.',
   9,
   './assets/images/menu/crunch.webp',
+  './assets/images/menu/crunch.webp',
   'Crunch',
   9,
+  1,
   1
 )
 ON CONFLICT(slug) DO UPDATE SET
   category_id = excluded.category_id,
+  name = excluded.name,
+  description = excluded.description,
   name_bg = excluded.name_bg,
   name_en = excluded.name_en,
   name_fr = excluded.name_fr,
@@ -659,14 +764,18 @@ ON CONFLICT(slug) DO UPDATE SET
   description_el = excluded.description_el,
   price = excluded.price,
   image_url = excluded.image_url,
+  image_key = excluded.image_key,
   image_alt = excluded.image_alt,
   sort_order = excluded.sort_order,
   is_active = excluded.is_active,
+  is_available = excluded.is_available,
   updated_at = CURRENT_TIMESTAMP;
 
 INSERT INTO menu_items (
   category_id,
   slug,
+  name,
+  description,
   name_bg,
   name_en,
   name_fr,
@@ -681,13 +790,17 @@ INSERT INTO menu_items (
   description_el,
   price,
   image_url,
+  image_key,
   image_alt,
   sort_order,
-  is_active
+  is_active,
+  is_available
 )
 VALUES (
   (SELECT id FROM categories WHERE slug = 'smash'),
   'killer',
+  'Killer',
+  'Легендарен burger с двоен лук, сирена и killer peanut butter sauce.',
   'Killer',
   'Killer',
   'Killer',
@@ -702,12 +815,16 @@ VALUES (
   'Θρυλικό burger με διπλό κρεμμύδι, τυριά και killer σάλτσα φυστικιού.',
   9,
   './assets/images/menu/killer.webp',
+  './assets/images/menu/killer.webp',
   'Killer',
   10,
+  1,
   1
 )
 ON CONFLICT(slug) DO UPDATE SET
   category_id = excluded.category_id,
+  name = excluded.name,
+  description = excluded.description,
   name_bg = excluded.name_bg,
   name_en = excluded.name_en,
   name_fr = excluded.name_fr,
@@ -722,14 +839,18 @@ ON CONFLICT(slug) DO UPDATE SET
   description_el = excluded.description_el,
   price = excluded.price,
   image_url = excluded.image_url,
+  image_key = excluded.image_key,
   image_alt = excluded.image_alt,
   sort_order = excluded.sort_order,
   is_active = excluded.is_active,
+  is_available = excluded.is_available,
   updated_at = CURRENT_TIMESTAMP;
 
 INSERT INTO menu_items (
   category_id,
   slug,
+  name,
+  description,
   name_bg,
   name_en,
   name_fr,
@@ -744,13 +865,17 @@ INSERT INTO menu_items (
   description_el,
   price,
   image_url,
+  image_key,
   image_alt,
   sort_order,
-  is_active
+  is_active,
+  is_available
 )
 VALUES (
   (SELECT id FROM categories WHERE slug = 'simple'),
   'simple',
+  'Simple',
+  'Чистият 28 вкус: бриош, чедър и сос 28.',
   'Simple',
   'Simple',
   'Simple',
@@ -765,12 +890,16 @@ VALUES (
   'Η καθαρή γεύση 28: brioche, cheddar και Sauce 28.',
   7,
   './assets/images/menu/simple.webp',
+  './assets/images/menu/simple.webp',
   'Simple',
   11,
+  1,
   1
 )
 ON CONFLICT(slug) DO UPDATE SET
   category_id = excluded.category_id,
+  name = excluded.name,
+  description = excluded.description,
   name_bg = excluded.name_bg,
   name_en = excluded.name_en,
   name_fr = excluded.name_fr,
@@ -785,14 +914,18 @@ ON CONFLICT(slug) DO UPDATE SET
   description_el = excluded.description_el,
   price = excluded.price,
   image_url = excluded.image_url,
+  image_key = excluded.image_key,
   image_alt = excluded.image_alt,
   sort_order = excluded.sort_order,
   is_active = excluded.is_active,
+  is_available = excluded.is_available,
   updated_at = CURRENT_TIMESTAMP;
 
 INSERT INTO menu_items (
   category_id,
   slug,
+  name,
+  description,
   name_bg,
   name_en,
   name_fr,
@@ -807,13 +940,17 @@ INSERT INTO menu_items (
   description_el,
   price,
   image_url,
+  image_key,
   image_alt,
   sort_order,
-  is_active
+  is_active,
+  is_available
 )
 VALUES (
   (SELECT id FROM categories WHERE slug = 'chicken'),
   'ko-ko',
+  'Ko-Ko',
+  'Пилешки burger с две филенца, сос 28 и течен чедър.',
   'Ko-Ko',
   'Ko-Ko',
   'Ko-Ko',
@@ -828,12 +965,16 @@ VALUES (
   'Burger κοτόπουλο με δύο φιλέτα, Sauce 28 και υγρό cheddar.',
   7,
   './assets/images/menu/ko-ko.webp',
+  './assets/images/menu/ko-ko.webp',
   'Ko-Ko',
   12,
+  1,
   1
 )
 ON CONFLICT(slug) DO UPDATE SET
   category_id = excluded.category_id,
+  name = excluded.name,
+  description = excluded.description,
   name_bg = excluded.name_bg,
   name_en = excluded.name_en,
   name_fr = excluded.name_fr,
@@ -848,14 +989,18 @@ ON CONFLICT(slug) DO UPDATE SET
   description_el = excluded.description_el,
   price = excluded.price,
   image_url = excluded.image_url,
+  image_key = excluded.image_key,
   image_alt = excluded.image_alt,
   sort_order = excluded.sort_order,
   is_active = excluded.is_active,
+  is_available = excluded.is_available,
   updated_at = CURRENT_TIMESTAMP;
 
 INSERT INTO menu_items (
   category_id,
   slug,
+  name,
+  description,
   name_bg,
   name_en,
   name_fr,
@@ -870,13 +1015,17 @@ INSERT INTO menu_items (
   description_el,
   price,
   image_url,
+  image_key,
   image_alt,
   sort_order,
-  is_active
+  is_active,
+  is_available
 )
 VALUES (
   (SELECT id FROM categories WHERE slug = 'chicken'),
   'c-chick',
+  'C-Chick',
+  'Пилешки burger с колслоу, бриош и сос 28.',
   'C-Chick',
   'C-Chick',
   'C-Chick',
@@ -891,12 +1040,16 @@ VALUES (
   'Burger κοτόπουλο με coleslaw, brioche και Sauce 28.',
   7,
   './assets/images/menu/c-chick.webp',
+  './assets/images/menu/c-chick.webp',
   'C-Chick',
   13,
+  1,
   1
 )
 ON CONFLICT(slug) DO UPDATE SET
   category_id = excluded.category_id,
+  name = excluded.name,
+  description = excluded.description,
   name_bg = excluded.name_bg,
   name_en = excluded.name_en,
   name_fr = excluded.name_fr,
@@ -911,14 +1064,18 @@ ON CONFLICT(slug) DO UPDATE SET
   description_el = excluded.description_el,
   price = excluded.price,
   image_url = excluded.image_url,
+  image_key = excluded.image_key,
   image_alt = excluded.image_alt,
   sort_order = excluded.sort_order,
   is_active = excluded.is_active,
+  is_available = excluded.is_available,
   updated_at = CURRENT_TIMESTAMP;
 
 INSERT INTO menu_items (
   category_id,
   slug,
+  name,
+  description,
   name_bg,
   name_en,
   name_fr,
@@ -933,13 +1090,17 @@ INSERT INTO menu_items (
   description_el,
   price,
   image_url,
+  image_key,
   image_alt,
   sort_order,
-  is_active
+  is_active,
+  is_available
 )
 VALUES (
   (SELECT id FROM categories WHERE slug = 'veggie'),
   'veggie',
+  'Veggie',
+  'Растителен burger със соев бургер, гуакамоле и свежи зеленчуци.',
   'Veggie',
   'Veggie',
   'Veggie',
@@ -954,12 +1115,16 @@ VALUES (
   'Φυτικό burger με σόγια, guacamole και φρέσκα λαχανικά.',
   7,
   './assets/images/menu/veggie.webp',
+  './assets/images/menu/veggie.webp',
   'Veggie',
   14,
+  1,
   1
 )
 ON CONFLICT(slug) DO UPDATE SET
   category_id = excluded.category_id,
+  name = excluded.name,
+  description = excluded.description,
   name_bg = excluded.name_bg,
   name_en = excluded.name_en,
   name_fr = excluded.name_fr,
@@ -974,14 +1139,18 @@ ON CONFLICT(slug) DO UPDATE SET
   description_el = excluded.description_el,
   price = excluded.price,
   image_url = excluded.image_url,
+  image_key = excluded.image_key,
   image_alt = excluded.image_alt,
   sort_order = excluded.sort_order,
   is_active = excluded.is_active,
+  is_available = excluded.is_available,
   updated_at = CURRENT_TIMESTAMP;
 
 INSERT INTO menu_items (
   category_id,
   slug,
+  name,
+  description,
   name_bg,
   name_en,
   name_fr,
@@ -996,13 +1165,17 @@ INSERT INTO menu_items (
   description_el,
   price,
   image_url,
+  image_key,
   image_alt,
   sort_order,
-  is_active
+  is_active,
+  is_available
 )
 VALUES (
   (SELECT id FROM categories WHERE slug = 'fries'),
   'loaded-fries',
+  'Loaded Fries',
+  'Хрупкави картофи с избрана добавка и топъл чедър сос.',
   'Loaded Fries',
   'Loaded Fries',
   'Loaded Fries',
@@ -1017,12 +1190,16 @@ VALUES (
   'Τραγανές πατάτες με την επιλογή σου και ζεστή σάλτσα cheddar.',
   5,
   '',
+  '',
   'Loaded Fries',
   15,
+  1,
   1
 )
 ON CONFLICT(slug) DO UPDATE SET
   category_id = excluded.category_id,
+  name = excluded.name,
+  description = excluded.description,
   name_bg = excluded.name_bg,
   name_en = excluded.name_en,
   name_fr = excluded.name_fr,
@@ -1037,14 +1214,18 @@ ON CONFLICT(slug) DO UPDATE SET
   description_el = excluded.description_el,
   price = excluded.price,
   image_url = excluded.image_url,
+  image_key = excluded.image_key,
   image_alt = excluded.image_alt,
   sort_order = excluded.sort_order,
   is_active = excluded.is_active,
+  is_available = excluded.is_available,
   updated_at = CURRENT_TIMESTAMP;
 
 INSERT INTO menu_items (
   category_id,
   slug,
+  name,
+  description,
   name_bg,
   name_en,
   name_fr,
@@ -1059,13 +1240,17 @@ INSERT INTO menu_items (
   description_el,
   price,
   image_url,
+  image_key,
   image_alt,
   sort_order,
-  is_active
+  is_active,
+  is_available
 )
 VALUES (
   (SELECT id FROM categories WHERE slug = 'drinks'),
   'fuzetea-forest-fruit',
+  'Fuzetea Iced Tea Forest Fruit 500мл',
+  'FUZETEA черен чай горски плодове е освежаваща напитка чай с малко калории, фюжън от черен чай и горски плодове.',
   'Fuzetea Iced Tea Forest Fruit 500мл',
   'Fuzetea Iced Tea Forest Fruit 500ml',
   'Fuzetea Iced Tea Forest Fruit 500ml',
@@ -1080,12 +1265,16 @@ VALUES (
   'FUZETEA black tea forest fruit is a refreshing low-calorie tea drink, a fusion of black tea and forest fruits.',
   2,
   './assets/images/forest.png',
+  './assets/images/forest.png',
   'Fuzetea Iced Tea Forest Fruit 500мл',
   16,
+  1,
   1
 )
 ON CONFLICT(slug) DO UPDATE SET
   category_id = excluded.category_id,
+  name = excluded.name,
+  description = excluded.description,
   name_bg = excluded.name_bg,
   name_en = excluded.name_en,
   name_fr = excluded.name_fr,
@@ -1100,14 +1289,18 @@ ON CONFLICT(slug) DO UPDATE SET
   description_el = excluded.description_el,
   price = excluded.price,
   image_url = excluded.image_url,
+  image_key = excluded.image_key,
   image_alt = excluded.image_alt,
   sort_order = excluded.sort_order,
   is_active = excluded.is_active,
+  is_available = excluded.is_available,
   updated_at = CURRENT_TIMESTAMP;
 
 INSERT INTO menu_items (
   category_id,
   slug,
+  name,
+  description,
   name_bg,
   name_en,
   name_fr,
@@ -1122,13 +1315,17 @@ INSERT INTO menu_items (
   description_el,
   price,
   image_url,
+  image_key,
   image_alt,
   sort_order,
-  is_active
+  is_active,
+  is_available
 )
 VALUES (
   (SELECT id FROM categories WHERE slug = 'drinks'),
   'fuzetea-peach-hibiscus',
+  'Студен Чай Fuzetea Праскова И Хибискус 500мл',
+  'FUZETEA черен чай праскова и хибискус е освежаваща напитка чай с малко калории, фюжън от черен чай, праскова и хибискус.',
   'Студен Чай Fuzetea Праскова И Хибискус 500мл',
   'Fuzetea Peach & Hibiscus Iced Tea 500ml',
   'Fuzetea Peach & Hibiscus Iced Tea 500ml',
@@ -1143,12 +1340,16 @@ VALUES (
   'FUZETEA black tea peach and hibiscus is a refreshing low-calorie tea drink, a fusion of black tea, peach and hibiscus.',
   2,
   './assets/images/peach.png',
+  './assets/images/peach.png',
   'Студен Чай Fuzetea Праскова И Хибискус 500мл',
   17,
+  1,
   1
 )
 ON CONFLICT(slug) DO UPDATE SET
   category_id = excluded.category_id,
+  name = excluded.name,
+  description = excluded.description,
   name_bg = excluded.name_bg,
   name_en = excluded.name_en,
   name_fr = excluded.name_fr,
@@ -1163,14 +1364,18 @@ ON CONFLICT(slug) DO UPDATE SET
   description_el = excluded.description_el,
   price = excluded.price,
   image_url = excluded.image_url,
+  image_key = excluded.image_key,
   image_alt = excluded.image_alt,
   sort_order = excluded.sort_order,
   is_active = excluded.is_active,
+  is_available = excluded.is_available,
   updated_at = CURRENT_TIMESTAMP;
 
 INSERT INTO menu_items (
   category_id,
   slug,
+  name,
+  description,
   name_bg,
   name_en,
   name_fr,
@@ -1185,13 +1390,17 @@ INSERT INTO menu_items (
   description_el,
   price,
   image_url,
+  image_key,
   image_alt,
   sort_order,
-  is_active
+  is_active,
+  is_available
 )
 VALUES (
   (SELECT id FROM categories WHERE slug = 'drinks'),
   'coca-cola-original',
+  'Coca-Cola Original Taste 500мл',
+  'Coca-Cola Original Taste е вкусна и освежаваща газирана напитка с отличен вкус.',
   'Coca-Cola Original Taste 500мл',
   'Coca-Cola Original Taste 500ml',
   'Coca-Cola Original Taste 500ml',
@@ -1206,12 +1415,16 @@ VALUES (
   'Coca-Cola Original Taste is a delicious and refreshing sparkling drink with a classic taste.',
   2,
   './assets/images/cola1.png',
+  './assets/images/cola1.png',
   'Coca-Cola Original Taste 500мл',
   18,
+  1,
   1
 )
 ON CONFLICT(slug) DO UPDATE SET
   category_id = excluded.category_id,
+  name = excluded.name,
+  description = excluded.description,
   name_bg = excluded.name_bg,
   name_en = excluded.name_en,
   name_fr = excluded.name_fr,
@@ -1226,14 +1439,18 @@ ON CONFLICT(slug) DO UPDATE SET
   description_el = excluded.description_el,
   price = excluded.price,
   image_url = excluded.image_url,
+  image_key = excluded.image_key,
   image_alt = excluded.image_alt,
   sort_order = excluded.sort_order,
   is_active = excluded.is_active,
+  is_available = excluded.is_available,
   updated_at = CURRENT_TIMESTAMP;
 
 INSERT INTO menu_items (
   category_id,
   slug,
+  name,
+  description,
   name_bg,
   name_en,
   name_fr,
@@ -1248,13 +1465,17 @@ INSERT INTO menu_items (
   description_el,
   price,
   image_url,
+  image_key,
   image_alt,
   sort_order,
-  is_active
+  is_active,
+  is_available
 )
 VALUES (
   (SELECT id FROM categories WHERE slug = 'drinks'),
   'fuzetea-lemon-lemongrass',
+  'Студен Чай Fuzetea Лимон И Лимонена Трева 500мл',
+  'FUZETEA черен чай лимон и лимонова трева е освежаваща напитка чай с малко калории, фюжън от черен чай, лимон и лимонова трева.',
   'Студен Чай Fuzetea Лимон И Лимонена Трева 500мл',
   'Fuzetea Lemon & Lemongrass Iced Tea 500ml',
   'Fuzetea Lemon & Lemongrass Iced Tea 500ml',
@@ -1269,12 +1490,16 @@ VALUES (
   'FUZETEA black tea lemon and lemongrass is a refreshing low-calorie tea drink, a fusion of black tea, lemon and lemongrass.',
   2,
   './assets/images/lemon.png',
+  './assets/images/lemon.png',
   'Студен Чай Fuzetea Лимон И Лимонена Трева 500мл',
   19,
+  1,
   1
 )
 ON CONFLICT(slug) DO UPDATE SET
   category_id = excluded.category_id,
+  name = excluded.name,
+  description = excluded.description,
   name_bg = excluded.name_bg,
   name_en = excluded.name_en,
   name_fr = excluded.name_fr,
@@ -1289,14 +1514,18 @@ ON CONFLICT(slug) DO UPDATE SET
   description_el = excluded.description_el,
   price = excluded.price,
   image_url = excluded.image_url,
+  image_key = excluded.image_key,
   image_alt = excluded.image_alt,
   sort_order = excluded.sort_order,
   is_active = excluded.is_active,
+  is_available = excluded.is_available,
   updated_at = CURRENT_TIMESTAMP;
 
 INSERT INTO menu_items (
   category_id,
   slug,
+  name,
+  description,
   name_bg,
   name_en,
   name_fr,
@@ -1311,13 +1540,17 @@ INSERT INTO menu_items (
   description_el,
   price,
   image_url,
+  image_key,
   image_alt,
   sort_order,
-  is_active
+  is_active,
+  is_available
 )
 VALUES (
   (SELECT id FROM categories WHERE slug = 'drinks'),
   'fanta-orange',
+  'Fanta Портокал 500мл',
+  'Fanta утолява жаждата и освежава – винаги до теб, когато искаш да си подариш награда.',
   'Fanta Портокал 500мл',
   'Fanta Orange 500ml',
   'Fanta Orange 500ml',
@@ -1332,12 +1565,16 @@ VALUES (
   'Fanta quenches your thirst and refreshes you - always there when you want to treat yourself.',
   2,
   './assets/images/fanta1.png',
+  './assets/images/fanta1.png',
   'Fanta Портокал 500мл',
   20,
+  1,
   1
 )
 ON CONFLICT(slug) DO UPDATE SET
   category_id = excluded.category_id,
+  name = excluded.name,
+  description = excluded.description,
   name_bg = excluded.name_bg,
   name_en = excluded.name_en,
   name_fr = excluded.name_fr,
@@ -1352,14 +1589,18 @@ ON CONFLICT(slug) DO UPDATE SET
   description_el = excluded.description_el,
   price = excluded.price,
   image_url = excluded.image_url,
+  image_key = excluded.image_key,
   image_alt = excluded.image_alt,
   sort_order = excluded.sort_order,
   is_active = excluded.is_active,
+  is_available = excluded.is_available,
   updated_at = CURRENT_TIMESTAMP;
 
 INSERT INTO menu_items (
   category_id,
   slug,
+  name,
+  description,
   name_bg,
   name_en,
   name_fr,
@@ -1374,13 +1615,17 @@ INSERT INTO menu_items (
   description_el,
   price,
   image_url,
+  image_key,
   image_alt,
   sort_order,
-  is_active
+  is_active,
+  is_available
 )
 VALUES (
   (SELECT id FROM categories WHERE slug = 'drinks'),
   'fanta-grape',
+  'Fanta Грозде 500мл',
+  'Освежаваща газирана напитка с вкус на грозде.',
   'Fanta Грозде 500мл',
   'Fanta Grape 500ml',
   'Fanta Grape 500ml',
@@ -1395,12 +1640,16 @@ VALUES (
   'Refreshing sparkling drink with grape flavor.',
   2,
   './assets/images/fantagrape.png',
+  './assets/images/fantagrape.png',
   'Fanta Грозде 500мл',
   21,
+  1,
   1
 )
 ON CONFLICT(slug) DO UPDATE SET
   category_id = excluded.category_id,
+  name = excluded.name,
+  description = excluded.description,
   name_bg = excluded.name_bg,
   name_en = excluded.name_en,
   name_fr = excluded.name_fr,
@@ -1415,14 +1664,18 @@ ON CONFLICT(slug) DO UPDATE SET
   description_el = excluded.description_el,
   price = excluded.price,
   image_url = excluded.image_url,
+  image_key = excluded.image_key,
   image_alt = excluded.image_alt,
   sort_order = excluded.sort_order,
   is_active = excluded.is_active,
+  is_available = excluded.is_available,
   updated_at = CURRENT_TIMESTAMP;
 
 INSERT INTO menu_items (
   category_id,
   slug,
+  name,
+  description,
   name_bg,
   name_en,
   name_fr,
@@ -1437,13 +1690,17 @@ INSERT INTO menu_items (
   description_el,
   price,
   image_url,
+  image_key,
   image_alt,
   sort_order,
-  is_active
+  is_active,
+  is_available
 )
 VALUES (
   (SELECT id FROM categories WHERE slug = 'drinks'),
   'fanta-lemon',
+  'Fanta Лимон 500мл',
+  'Освежаваща газирана напитка с вкус на лимон.',
   'Fanta Лимон 500мл',
   'Fanta Lemon 500ml',
   'Fanta Lemon 500ml',
@@ -1458,12 +1715,16 @@ VALUES (
   'Refreshing sparkling drink with lemon flavor.',
   2,
   './assets/images/fantalemon.png',
+  './assets/images/fantalemon.png',
   'Fanta Лимон 500мл',
   22,
+  1,
   1
 )
 ON CONFLICT(slug) DO UPDATE SET
   category_id = excluded.category_id,
+  name = excluded.name,
+  description = excluded.description,
   name_bg = excluded.name_bg,
   name_en = excluded.name_en,
   name_fr = excluded.name_fr,
@@ -1478,14 +1739,18 @@ ON CONFLICT(slug) DO UPDATE SET
   description_el = excluded.description_el,
   price = excluded.price,
   image_url = excluded.image_url,
+  image_key = excluded.image_key,
   image_alt = excluded.image_alt,
   sort_order = excluded.sort_order,
   is_active = excluded.is_active,
+  is_available = excluded.is_available,
   updated_at = CURRENT_TIMESTAMP;
 
 INSERT INTO menu_items (
   category_id,
   slug,
+  name,
+  description,
   name_bg,
   name_en,
   name_fr,
@@ -1500,13 +1765,17 @@ INSERT INTO menu_items (
   description_el,
   price,
   image_url,
+  image_key,
   image_alt,
   sort_order,
-  is_active
+  is_active,
+  is_available
 )
 VALUES (
   (SELECT id FROM categories WHERE slug = 'drinks'),
   'coca-cola-zero',
+  'Coca-Cola Zero 500мл',
+  'Coca-Cola без захар – класически вкус, нула захар.',
   'Coca-Cola Zero 500мл',
   'Coca-Cola Zero 500ml',
   'Coca-Cola Zero 500ml',
@@ -1521,12 +1790,16 @@ VALUES (
   'Coca-Cola without sugar - classic taste, zero sugar.',
   2,
   './assets/images/cocacolazero.png',
+  './assets/images/cocacolazero.png',
   'Coca-Cola Zero 500мл',
   23,
+  1,
   1
 )
 ON CONFLICT(slug) DO UPDATE SET
   category_id = excluded.category_id,
+  name = excluded.name,
+  description = excluded.description,
   name_bg = excluded.name_bg,
   name_en = excluded.name_en,
   name_fr = excluded.name_fr,
@@ -1541,14 +1814,18 @@ ON CONFLICT(slug) DO UPDATE SET
   description_el = excluded.description_el,
   price = excluded.price,
   image_url = excluded.image_url,
+  image_key = excluded.image_key,
   image_alt = excluded.image_alt,
   sort_order = excluded.sort_order,
   is_active = excluded.is_active,
+  is_available = excluded.is_available,
   updated_at = CURRENT_TIMESTAMP;
 
 INSERT INTO menu_items (
   category_id,
   slug,
+  name,
+  description,
   name_bg,
   name_en,
   name_fr,
@@ -1563,13 +1840,17 @@ INSERT INTO menu_items (
   description_el,
   price,
   image_url,
+  image_key,
   image_alt,
   sort_order,
-  is_active
+  is_active,
+  is_available
 )
 VALUES (
   (SELECT id FROM categories WHERE slug = 'drinks'),
   'bankya-water',
+  'Минерална Вода Банкя 500мл',
+  'Банкя е натурална минерална вода с ниска минерализация, подходяща за ежедневна консумация.',
   'Минерална Вода Банкя 500мл',
   'Bankya Mineral Water 500ml',
   'Bankya Mineral Water 500ml',
@@ -1584,12 +1865,16 @@ VALUES (
   'Bankya is natural mineral water with low mineralization, suitable for everyday consumption.',
   1,
   './assets/images/water1.png',
+  './assets/images/water1.png',
   'Минерална Вода Банкя 500мл',
   24,
+  1,
   1
 )
 ON CONFLICT(slug) DO UPDATE SET
   category_id = excluded.category_id,
+  name = excluded.name,
+  description = excluded.description,
   name_bg = excluded.name_bg,
   name_en = excluded.name_en,
   name_fr = excluded.name_fr,
@@ -1604,14 +1889,18 @@ ON CONFLICT(slug) DO UPDATE SET
   description_el = excluded.description_el,
   price = excluded.price,
   image_url = excluded.image_url,
+  image_key = excluded.image_key,
   image_alt = excluded.image_alt,
   sort_order = excluded.sort_order,
   is_active = excluded.is_active,
+  is_available = excluded.is_available,
   updated_at = CURRENT_TIMESTAMP;
 
 INSERT INTO menu_items (
   category_id,
   slug,
+  name,
+  description,
   name_bg,
   name_en,
   name_fr,
@@ -1626,13 +1915,17 @@ INSERT INTO menu_items (
   description_el,
   price,
   image_url,
+  image_key,
   image_alt,
   sort_order,
-  is_active
+  is_active,
+  is_available
 )
 VALUES (
   (SELECT id FROM categories WHERE slug = 'drinks'),
   'fuzetea-mango-pineapple',
+  'Студен Чай Fuzetea Манго И Ананас 500мл',
+  'FUZETEA черен чай манго и ананас е освежаваща напитка чай с малко калории, фюжън от черен чай, манго и ананас.',
   'Студен Чай Fuzetea Манго И Ананас 500мл',
   'Fuzetea Mango & Pineapple Iced Tea 500ml',
   'Fuzetea Mango & Pineapple Iced Tea 500ml',
@@ -1647,12 +1940,16 @@ VALUES (
   'FUZETEA black tea mango and pineapple is a refreshing low-calorie tea drink, a fusion of black tea, mango and pineapple.',
   2,
   './assets/images/pineapple.png',
+  './assets/images/pineapple.png',
   'Студен Чай Fuzetea Манго И Ананас 500мл',
   25,
+  1,
   1
 )
 ON CONFLICT(slug) DO UPDATE SET
   category_id = excluded.category_id,
+  name = excluded.name,
+  description = excluded.description,
   name_bg = excluded.name_bg,
   name_en = excluded.name_en,
   name_fr = excluded.name_fr,
@@ -1667,14 +1964,18 @@ ON CONFLICT(slug) DO UPDATE SET
   description_el = excluded.description_el,
   price = excluded.price,
   image_url = excluded.image_url,
+  image_key = excluded.image_key,
   image_alt = excluded.image_alt,
   sort_order = excluded.sort_order,
   is_active = excluded.is_active,
+  is_available = excluded.is_available,
   updated_at = CURRENT_TIMESTAMP;
 
 INSERT INTO menu_items (
   category_id,
   slug,
+  name,
+  description,
   name_bg,
   name_en,
   name_fr,
@@ -1689,13 +1990,17 @@ INSERT INTO menu_items (
   description_el,
   price,
   image_url,
+  image_key,
   image_alt,
   sort_order,
-  is_active
+  is_active,
+  is_available
 )
 VALUES (
   (SELECT id FROM categories WHERE slug = 'beer'),
   'stella-artois-can',
+  'Стела Артоа Кен 500мл',
+  'Бира Stella Artois кен 500мл.',
   'Стела Артоа Кен 500мл',
   'Stella Artois Can 500ml',
   'Stella Artois Can 500ml',
@@ -1710,12 +2015,16 @@ VALUES (
   'Stella Artois beer can 500ml.',
   3,
   './assets/images/stela1.png',
+  './assets/images/stela1.png',
   'Стела Артоа Кен 500мл',
   26,
+  1,
   1
 )
 ON CONFLICT(slug) DO UPDATE SET
   category_id = excluded.category_id,
+  name = excluded.name,
+  description = excluded.description,
   name_bg = excluded.name_bg,
   name_en = excluded.name_en,
   name_fr = excluded.name_fr,
@@ -1730,14 +2039,18 @@ ON CONFLICT(slug) DO UPDATE SET
   description_el = excluded.description_el,
   price = excluded.price,
   image_url = excluded.image_url,
+  image_key = excluded.image_key,
   image_alt = excluded.image_alt,
   sort_order = excluded.sort_order,
   is_active = excluded.is_active,
+  is_available = excluded.is_available,
   updated_at = CURRENT_TIMESTAMP;
 
 INSERT INTO menu_items (
   category_id,
   slug,
+  name,
+  description,
   name_bg,
   name_en,
   name_fr,
@@ -1752,13 +2065,17 @@ INSERT INTO menu_items (
   description_el,
   price,
   image_url,
+  image_key,
   image_alt,
   sort_order,
-  is_active
+  is_active,
+  is_available
 )
 VALUES (
   (SELECT id FROM categories WHERE slug = 'beer'),
   'kamenitza-can',
+  'Каменица Кен 500мл',
+  'Бира Каменица кен 500мл.',
   'Каменица Кен 500мл',
   'Kamenitza Can 500ml',
   'Kamenitza Can 500ml',
@@ -1773,12 +2090,16 @@ VALUES (
   'Kamenitza beer can 500ml.',
   2,
   './assets/images/kame1.png',
+  './assets/images/kame1.png',
   'Каменица Кен 500мл',
   27,
+  1,
   1
 )
 ON CONFLICT(slug) DO UPDATE SET
   category_id = excluded.category_id,
+  name = excluded.name,
+  description = excluded.description,
   name_bg = excluded.name_bg,
   name_en = excluded.name_en,
   name_fr = excluded.name_fr,
@@ -1793,14 +2114,18 @@ ON CONFLICT(slug) DO UPDATE SET
   description_el = excluded.description_el,
   price = excluded.price,
   image_url = excluded.image_url,
+  image_key = excluded.image_key,
   image_alt = excluded.image_alt,
   sort_order = excluded.sort_order,
   is_active = excluded.is_active,
+  is_available = excluded.is_available,
   updated_at = CURRENT_TIMESTAMP;
 
 INSERT INTO menu_items (
   category_id,
   slug,
+  name,
+  description,
   name_bg,
   name_en,
   name_fr,
@@ -1815,13 +2140,17 @@ INSERT INTO menu_items (
   description_el,
   price,
   image_url,
+  image_key,
   image_alt,
   sort_order,
-  is_active
+  is_active,
+  is_available
 )
 VALUES (
   (SELECT id FROM categories WHERE slug = 'beer'),
   'corona-330',
+  'Corona 330мл',
+  'Бира Corona 330мл.',
   'Corona 330мл',
   'Corona 330ml',
   'Corona 330ml',
@@ -1836,12 +2165,16 @@ VALUES (
   'Corona beer 330ml.',
   4.5,
   './assets/images/corona1.png',
+  './assets/images/corona1.png',
   'Corona 330мл',
   28,
+  1,
   1
 )
 ON CONFLICT(slug) DO UPDATE SET
   category_id = excluded.category_id,
+  name = excluded.name,
+  description = excluded.description,
   name_bg = excluded.name_bg,
   name_en = excluded.name_en,
   name_fr = excluded.name_fr,
@@ -1856,14 +2189,18 @@ ON CONFLICT(slug) DO UPDATE SET
   description_el = excluded.description_el,
   price = excluded.price,
   image_url = excluded.image_url,
+  image_key = excluded.image_key,
   image_alt = excluded.image_alt,
   sort_order = excluded.sort_order,
   is_active = excluded.is_active,
+  is_available = excluded.is_available,
   updated_at = CURRENT_TIMESTAMP;
 
 INSERT INTO menu_items (
   category_id,
   slug,
+  name,
+  description,
   name_bg,
   name_en,
   name_fr,
@@ -1878,13 +2215,17 @@ INSERT INTO menu_items (
   description_el,
   price,
   image_url,
+  image_key,
   image_alt,
   sort_order,
-  is_active
+  is_active,
+  is_available
 )
 VALUES (
   (SELECT id FROM categories WHERE slug = 'beer'),
   'madri-500',
+  'Мадри 500мл',
+  'Бира Мадри 500мл.',
   'Мадри 500мл',
   'Madri 500ml',
   'Madri 500ml',
@@ -1899,12 +2240,16 @@ VALUES (
   'Madri beer 500ml.',
   2.5,
   './assets/images/madri.png',
+  './assets/images/madri.png',
   'Мадри 500мл',
   29,
+  1,
   1
 )
 ON CONFLICT(slug) DO UPDATE SET
   category_id = excluded.category_id,
+  name = excluded.name,
+  description = excluded.description,
   name_bg = excluded.name_bg,
   name_en = excluded.name_en,
   name_fr = excluded.name_fr,
@@ -1919,9 +2264,65 @@ ON CONFLICT(slug) DO UPDATE SET
   description_el = excluded.description_el,
   price = excluded.price,
   image_url = excluded.image_url,
+  image_key = excluded.image_key,
   image_alt = excluded.image_alt,
   sort_order = excluded.sort_order,
   is_active = excluded.is_active,
+  is_available = excluded.is_available,
   updated_at = CURRENT_TIMESTAMP;
 
-COMMIT;
+INSERT INTO gallery_images (title, alt, image_url, image_key, sort_order, is_active)
+SELECT '28 GRILL burger photo', '28 GRILL burger photo', 'assets/gallery/gallery-1.webp', 'gallery-1', 1, 1
+WHERE NOT EXISTS (SELECT 1 FROM gallery_images WHERE image_url = 'assets/gallery/gallery-1.webp');
+
+UPDATE gallery_images
+SET
+  title = '28 GRILL burger photo',
+  alt = '28 GRILL burger photo',
+  image_key = 'gallery-1',
+  sort_order = 1,
+  is_active = 1,
+  updated_at = CURRENT_TIMESTAMP
+WHERE image_url = 'assets/gallery/gallery-1.webp';
+
+INSERT INTO gallery_images (title, alt, image_url, image_key, sort_order, is_active)
+SELECT '28 GRILL smash burger', '28 GRILL smash burger', 'assets/gallery/gallery-2.webp', 'gallery-2', 2, 1
+WHERE NOT EXISTS (SELECT 1 FROM gallery_images WHERE image_url = 'assets/gallery/gallery-2.webp');
+
+UPDATE gallery_images
+SET
+  title = '28 GRILL smash burger',
+  alt = '28 GRILL smash burger',
+  image_key = 'gallery-2',
+  sort_order = 2,
+  is_active = 1,
+  updated_at = CURRENT_TIMESTAMP
+WHERE image_url = 'assets/gallery/gallery-2.webp';
+
+INSERT INTO gallery_images (title, alt, image_url, image_key, sort_order, is_active)
+SELECT '28 GRILL crispy burger', '28 GRILL crispy burger', 'assets/gallery/gallery-3.webp', 'gallery-3', 3, 1
+WHERE NOT EXISTS (SELECT 1 FROM gallery_images WHERE image_url = 'assets/gallery/gallery-3.webp');
+
+UPDATE gallery_images
+SET
+  title = '28 GRILL crispy burger',
+  alt = '28 GRILL crispy burger',
+  image_key = 'gallery-3',
+  sort_order = 3,
+  is_active = 1,
+  updated_at = CURRENT_TIMESTAMP
+WHERE image_url = 'assets/gallery/gallery-3.webp';
+
+INSERT INTO gallery_images (title, alt, image_url, image_key, sort_order, is_active)
+SELECT '28 GRILL Kapana moment', '28 GRILL Kapana moment', 'assets/gallery/gallery-4.webp', 'gallery-4', 4, 1
+WHERE NOT EXISTS (SELECT 1 FROM gallery_images WHERE image_url = 'assets/gallery/gallery-4.webp');
+
+UPDATE gallery_images
+SET
+  title = '28 GRILL Kapana moment',
+  alt = '28 GRILL Kapana moment',
+  image_key = 'gallery-4',
+  sort_order = 4,
+  is_active = 1,
+  updated_at = CURRENT_TIMESTAMP
+WHERE image_url = 'assets/gallery/gallery-4.webp';
